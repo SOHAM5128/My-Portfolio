@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Role
         ctxF.fillStyle = accentNeon;
         ctxF.font = '800 20px "JetBrains Mono", monospace';
-        ctxF.fillText('COMPUTER SCIENCE ENGINEER', 256, 475);
+        ctxF.fillText('FULL STACK DEVELOPER', 256, 475);
         
         // Separation line
         ctxF.strokeStyle = 'rgba(148, 163, 184, 0.3)';
