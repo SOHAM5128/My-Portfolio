@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://marjoballabani.me/sitemap.xml
+Sitemap: https://soham5128.github.io/My-Portfolio/sitemap.xml
