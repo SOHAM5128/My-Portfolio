@@ -1,18 +1,15 @@
-# Java
-*.class
+# Build artifacts and cache
+gb/spray-*
 
-# Local Databases
-contacts.json
+# Node modules
+node_modules/
 
-# IDEs and Editors
-.idea/
+# MacOS
+.DS_Store
+
+# IDE
 .vscode/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.swp
+.idea/
 
-# OS Files
-Thumbs.db
-Desktop.ini
+# Java compiled classes
+*.class

@@ -1,347 +1,627 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script>
-        window.addEventListener('error', function(e) {
-            console.error("GLOBAL ERROR caught:", e.message, "at", e.filename, ":", e.lineno);
-            alert("GLOBAL ERROR: " + e.message + " at " + e.filename + ":" + e.lineno);
-        });
-    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Soham Neswankar - Premium Futuristic 3D Developer Portfolio. Creative Full-Stack Engineer specializing in interactive 3D Web experiences.">
-    <meta name="keywords" content="Portfolio, 3D Web, Three.js, GSAP, WebGL, Full-Stack Developer, Cyberpunk Website, Creative Developer">
-    <meta name="author" content="Soham Neswankar">
-    
+
+    <!-- Primary Meta Tags -->
+    <title>Soham Satyawan Neswankar | Computer Science Engineering Student | MERN Stack & AR Developer</title>
+    <meta name="title" content="Soham Satyawan Neswankar | Computer Science Engineering Student | MERN Stack & AR Developer">
+    <meta name="description" content="Computer Science Engineering student skilled in MERN stack development, REST API integration, and responsive web applications. Experienced in building full-stack and AR-based projects using React.js, Node.js, MongoDB, and Three.js.">
+    <meta name="keywords" content="Soham Satyawan Neswankar, Soham Neswankar, Software Engineer, MERN Stack, React, Node.js, MongoDB, Three.js, AR.js, Kalyan, Maharashtra, India">
+    <meta name="author" content="Soham Satyawan Neswankar">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+
+    <!-- Geo Tags -->
+    <meta name="geo.region" content="IN-MH">
+    <meta name="geo.placename" content="Kalyan">
+    <meta name="geo.position" content="19.2403;73.1305">
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Soham Neswankar | Creative 3D Engineer">
-    <meta property="og:description" content="Explore a premium, cinematic 3D portfolio featuring interactive WebGL scenes, futuristic HUD designs, and high-performance animations.">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1508739773434-c26b3d09e071?q=80&w=1200&auto=format&fit=crop">
+    <meta property="og:url" content="https://soham5128.github.io">
+    <meta property="og:site_name" content="Soham Satyawan Neswankar">
+    <meta property="og:title" content="Soham Satyawan Neswankar | Computer Science Student">
+    <meta property="og:description" content="Computer Science Engineering student skilled in MERN stack development, REST API integration, and AR-based projects.">
+    <meta property="og:image" content="image/social-cover.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Soham Satyawan Neswankar - Computer Science Student">
+    <meta property="og:locale" content="en_US">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:title" content="Soham Neswankar | Creative 3D Engineer">
-    <meta property="twitter:description" content="Explore a premium, cinematic 3D portfolio featuring interactive WebGL scenes, futuristic HUD designs, and high-performance animations.">
+    <meta property="twitter:url" content="https://soham5128.github.io">
+    <meta property="twitter:title" content="Soham Satyawan Neswankar | Computer Science Student">
+    <meta property="twitter:description" content="Computer Science Engineering student skilled in MERN stack development, REST API integration, and AR-based projects.">
+    <meta property="twitter:image" content="image/social-cover.png">
+    <meta property="twitter:image:alt" content="Soham Satyawan Neswankar - Computer Science Student">
 
-    <title>SOHAM NESWANKAR // Interactive 3D Portfolio</title>
-    
-    <!-- Google Fonts -->
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://soham5128.github.io">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+    <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    
-    <!-- FontAwesome for Cyberpunk Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Stylesheet -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+    <!-- Preload critical resources -->
+    <link rel="preload" href="neo-styles.css" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@400;700&family=Caveat:wght@400;700&display=swap" as="style">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="neo-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@400;700&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <!-- External JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Structured Data / JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Soham Satyawan Neswankar",
+      "url": "https://soham5128.github.io",
+      "jobTitle": "Computer Science Engineering Student",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Kalyan",
+        "addressRegion": "Maharashtra",
+        "addressCountry": "India"
+      },
+      "alumniOf": {
+        "@type": "EducationalOrganization",
+        "name": "Parul University"
+      },
+      "knowsAbout": ["Computer Science", "MERN Stack Development", "React.js", "Node.js", "Express.js", "MongoDB", "Three.js", "AR.js", "Java", "JavaScript", "Python", "C", "C++", "Responsive Web Design"],
+      "sameAs": [
+        "https://github.com/SOHAM5128",
+        "https://leetcode.com/u/SOHAM_3116"
+      ]
+    }
+    </script>
 </head>
 <body>
-
-    <!-- Scanline & Glitch HUD Overlay -->
-    <div class="hud-overlay">
-        <div class="scanlines"></div>
-        <div class="grid-overlay"></div>
-    </div>
-
-
-
-    <!-- Scroll Progress Indicator -->
-    <div class="scroll-progress-container">
-        <div class="scroll-progress-bar" id="progressBar"></div>
-    </div>
-
-    <!-- Interactive Terminal Preloader -->
-    <div id="preloader">
-        <div class="loader-terminal">
-            <div class="terminal-header">
-                <span class="terminal-dot red"></span>
-                <span class="terminal-dot yellow"></span>
-                <span class="terminal-dot green"></span>
-                <span class="terminal-title">SYSTEM_BOOT_SEQUENCE</span>
+    <!-- Loading Screen -->
+    <div class="loader-overlay">
+        <div class="loader-shapes">
+            <div class="loader-shape-svg loader-shape-1">
+                <svg width="80" height="80" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="6" y="6" width="88" height="88" rx="8" fill="#66d9ef" stroke="#000" stroke-width="4"/>
+                    <rect x="3" y="3" width="88" height="88" rx="8" fill="#66d9ef" stroke="#000" stroke-width="4"/>
+                    <path d="M35 40 L20 50 L35 60" stroke="#000" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M65 40 L80 50 L65 60" stroke="#000" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <line x1="55" y1="35" x2="45" y2="65" stroke="#000" stroke-width="5" stroke-linecap="round"/>
+                </svg>
             </div>
-            <div class="terminal-body" id="loaderLogs">
-                <p class="log-line">> INITIALIZING QUANTUM CORE...</p>
+            <div class="loader-shape-svg loader-shape-2">
+                <svg width="80" height="80" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="6" y="6" width="88" height="88" rx="8" fill="#ffd93d" stroke="#000" stroke-width="4"/>
+                    <rect x="3" y="3" width="88" height="88" rx="8" fill="#ffd93d" stroke="#000" stroke-width="4"/>
+                    <path d="M25 35 L40 50 L25 65" stroke="#000" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <line x1="50" y1="65" x2="75" y2="65" stroke="#000" stroke-width="5" stroke-linecap="round"/>
+                </svg>
             </div>
-            <div class="progress-container">
-                <div class="progress-bar-fill" id="loaderBar"></div>
-                <div class="progress-percentage" id="loaderPercent">0%</div>
+            <div class="loader-shape-svg loader-shape-3">
+                <svg width="80" height="80" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="6" y="6" width="88" height="88" rx="8" fill="#a8e6cf" stroke="#000" stroke-width="4"/>
+                    <rect x="3" y="3" width="88" height="88" rx="8" fill="#a8e6cf" stroke="#000" stroke-width="4"/>
+                    <rect x="20" y="20" width="60" height="60" rx="3" fill="#ffd93d" stroke="#000" stroke-width="4"/>
+                    <rect x="30" y="20" width="40" height="20" fill="#66d9ef" stroke="#000" stroke-width="3"/>
+                    <rect x="35" y="55" width="30" height="15" rx="2" fill="#000"/>
+                    <circle cx="50" cy="35" r="3" fill="#000"/>
+                </svg>
             </div>
+        </div>
+        <div class="loader-wrapper">
+            <div class="loader-letter">S</div>
+            <div class="loader-letter">N</div>
+        </div>
+        <div class="loader-progress-bar">
+            <div class="loader-progress-fill"></div>
         </div>
     </div>
 
-    <!-- Header Navigation -->
-    <header class="hud-header">
-        <div class="header-logo">
-            <a href="#hero">SN</a>
+    <div class="page-wrapper">
+    <div class="progress-bar-container">
+        <div class="progress-bar-fill"></div>
+        <div class="progress-checkpoints">
+            <div class="checkpoint" data-section="hero">
+                <div class="checkpoint-dot"></div>
+                <span class="checkpoint-label">Home</span>
+            </div>
+            <div class="checkpoint" data-section="about">
+                <div class="checkpoint-dot"></div>
+                <span class="checkpoint-label">About</span>
+            </div>
+            <div class="checkpoint" data-section="experience">
+                <div class="checkpoint-dot"></div>
+                <span class="checkpoint-label">Journey</span>
+            </div>
+            <div class="checkpoint" data-section="skills">
+                <div class="checkpoint-dot"></div>
+                <span class="checkpoint-label">Skills</span>
+            </div>
+            <div class="checkpoint" data-section="contact">
+                <div class="checkpoint-dot"></div>
+                <span class="checkpoint-label">Contact</span>
+            </div>
         </div>
-        <nav class="header-nav">
-            <ul>
-                <li><a href="#about" class="nav-link"><span class="nav-num">01.</span> ABOUT</a></li>
-                <li><a href="#skills" class="nav-link"><span class="nav-num">02.</span> SKILLS</a></li>
-                <li><a href="#projects" class="nav-link"><span class="nav-num">03.</span> PROJECTS</a></li>
-                <li><a href="#timeline" class="nav-link"><span class="nav-num">04.</span> EDUCATION</a></li>
-                <li><a href="#certs" class="nav-link"><span class="nav-num">05.</span> CERTS</a></li>
-                <li><a href="#profiles" class="nav-link"><span class="nav-num">06.</span> PROFILES</a></li>
-                <li><a href="#contact" class="nav-link"><span class="nav-num">07.</span> CONTACT</a></li>
-            </ul>
-        </nav>
-        <div class="header-controls">
-            <!-- Theme Toggle Button -->
-            <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Cyber Theme">
-                <i class="fa-solid fa-moon"></i>
-                <span class="toggle-glow"></span>
-            </button>
-            <!-- Hire Me Button -->
-            <a href="#contact" class="hire-me-btn">
-                <i class="fa-solid fa-paper-plane"></i> Hire Me
-            </a>
-            <!-- Mobile Menu Toggle -->
-            <button class="mobile-menu-toggle" aria-label="Toggle Menu">
-                <span class="hamburger-bar"></span>
-                <span class="hamburger-bar"></span>
-                <span class="hamburger-bar"></span>
-            </button>
-        </div>
-    </header>
-
-    <!-- Mobile Nav Overlay -->
-    <div class="mobile-nav-overlay">
-        <nav class="mobile-nav-menu">
-            <ul>
-                <li><a href="#about" class="mobile-nav-link"><span>01.</span> ABOUT</a></li>
-                <li><a href="#skills" class="mobile-nav-link"><span>02.</span> SKILLS</a></li>
-                <li><a href="#projects" class="mobile-nav-link"><span>03.</span> PROJECTS</a></li>
-                <li><a href="#timeline" class="mobile-nav-link"><span>04.</span> EDUCATION</a></li>
-                <li><a href="#certs" class="mobile-nav-link"><span>05.</span> CERTS</a></li>
-                <li><a href="#profiles" class="mobile-nav-link"><span>06.</span> PROFILES</a></li>
-                <li><a href="#contact" class="mobile-nav-link"><span>07.</span> CONTACT</a></li>
-            </ul>
-        </nav>
     </div>
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="#" class="nav-brand">SN</a>
+            <div class="nav-right">
+                <a href="#hero" class="nav-link">Home</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#experience" class="nav-link">Journey</a>
+                <a href="#skills" class="nav-link">Skills</a>
+                <a href="resume.pdf" class="nav-link" download="Soham_Neswankar_Resume.pdf"><i class="fas fa-download"></i> Resume</a>
+                <a href="https://leetcode.com/u/SOHAM_3116" target="_blank" class="nav-lazyfire nav-hypergrep" title="LeetCode Profile">
+                    <span class="nav-lazyfire-text"><i class="fas fa-code"></i> LeetCode</span>
+                </a>
+                <a href="#contact" class="nav-cta">Get in Touch!</a>
+                <button id="theme-toggle" class="theme-toggle-nav" aria-label="Toggle theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
 
-    <!-- Main Container -->
-    <main class="content-wrapper">
-
-        <!-- 1. Hero Section -->
-        <section id="hero" class="hero-section">
-            <div class="container">
-                <div class="hero-grid">
-                    <!-- Left Side: Info -->
-                    <div class="hero-info-side">
-                        <div class="cyber-badge-wrapper scroll-reveal">
-                            <span class="cyber-badge"><i class="fa-solid fa-code"></i> FULL STACK DEVELOPER</span>
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <div class="hero-left">
+                <p class="hero-greeting" id="hero-greeting">Hi there! 👋</p>
+                <h1 class="hero-name">I'm Soham Neswankar.</h1>
+                <p class="hero-description">
+                    Based in Kalyan, Maharashtra, I'm a Computer Science Engineering student. I specialize in MERN stack development, REST API integration, and responsive web applications. I also build AR-based experiences using React.js, Node.js, MongoDB, Three.js, and AR.js.
+                </p>
+                <div class="hero-social">
+                    <a href="https://github.com/SOHAM5128" target="_blank" class="social-btn" title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="https://leetcode.com/u/SOHAM_3116" target="_blank" class="social-btn" title="LeetCode">
+                        <i class="fas fa-code"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/soham-neswankar" target="_blank" class="social-btn" title="LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                </div>
+                <div class="hero-cta-container">
+                    <div class="coffee-cta-wrapper">
+                        <div class="coffee-arrow">
+                            <span class="coffee-arrow-text">View my resume</span>
+                            <img src="image/arrow.png" alt="arrow" class="coffee-arrow-img" width="140" height="140">
                         </div>
-                        <h1 class="hero-title scroll-reveal">SOHAM<br><span class="highlight-text">NESWANKAR</span></h1>
-                        <p class="hero-desc scroll-reveal">
-                            Computer Science Engineering student at Parul University. Skilled in MERN stack development, REST API integration, and responsive 3D web experiences. Seeking software development internship opportunities.
+                        <a href="terminal.html" class="btn-coffee" title="Interactive Terminal Resume">
+                            <img src="image/caffe-icon.gif" alt="Coffee" class="coffee-icon-img" width="52" height="52">
+                        </a>
+                    </div>
+                    <div class="hero-btns">
+                        <a href="#contact" class="btn-cta">Get in Touch!</a>
+                        <a href="resume.pdf" class="btn-cta btn-download-resume" download="Soham_Neswankar_Resume.pdf"><i class="fas fa-download"></i> Download CV</a>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-right">
+                <div class="hero-image-wrapper">
+                    <div class="tape-sticker"></div>
+                    <img src="image/avatar.jpg" alt="Soham Satyawan Neswankar" class="hero-photo" width="400" height="400" fetchpriority="high">
+                    <div class="deco-code">
+                        <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="6" y="6" width="88" height="88" rx="8" fill="#66d9ef" stroke="#000" stroke-width="4"/>
+                            <rect x="3" y="3" width="88" height="88" rx="8" fill="#66d9ef" stroke="#000" stroke-width="4"/>
+                            <path d="M35 40 L20 50 L35 60" stroke="#000" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M65 40 L80 50 L65 60" stroke="#000" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <line x1="55" y1="35" x2="45" y2="65" stroke="#000" stroke-width="5" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div class="deco-terminal">
+                        <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="6" y="6" width="88" height="88" rx="8" fill="#ffd93d" stroke="#000" stroke-width="4"/>
+                            <rect x="3" y="3" width="88" height="88" rx="8" fill="#ffd93d" stroke="#000" stroke-width="4"/>
+                            <path d="M25 35 L40 50 L25 65" stroke="#000" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <line x1="50" y1="65" x2="75" y2="65" stroke="#000" stroke-width="5" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div class="deco-floppy">
+                        <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="6" y="6" width="88" height="88" rx="8" fill="#a8e6cf" stroke="#000" stroke-width="4"/>
+                            <rect x="3" y="3" width="88" height="88" rx="8" fill="#a8e6cf" stroke="#000" stroke-width="4"/>
+                            <rect x="20" y="20" width="60" height="60" rx="3" fill="#ffd93d" stroke="#000" stroke-width="4"/>
+                            <rect x="30" y="20" width="40" height="20" fill="#66d9ef" stroke="#000" stroke-width="3"/>
+                            <rect x="35" y="55" width="30" height="15" rx="2" fill="#000"/>
+                            <circle cx="50" cy="35" r="3" fill="#000"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tech-badges">
+            <span class="tech-badge"><i class="fab fa-react"></i> React.js</span>
+            <span class="tech-badge"><i class="fab fa-node-js"></i> Node.js</span>
+            <span class="tech-badge"><i class="fas fa-database"></i> MongoDB</span>
+            <span class="tech-badge"><i class="fab fa-js"></i> JavaScript</span>
+            <span class="tech-badge"><i class="fab fa-python"></i> Python</span>
+            <span class="tech-badge"><i class="fab fa-java"></i> Java</span>
+            <span class="tech-badge"><i class="fas fa-code"></i> C++</span>
+            <span class="tech-badge"><i class="fas fa-cube"></i> Three.js</span>
+        </div>
+    </section>
+
+    <div class="paper-tear paper-tear-top">
+        <svg width="100%" height="30" viewBox="0 0 1440 30" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,0 L0,15 Q10,5 20,15 T40,15 Q50,5 60,15 T80,15 Q90,20 100,15 T120,15 Q130,10 140,15 T160,15 Q170,5 180,15 T200,15 Q210,20 220,15 T240,15 Q250,8 260,15 T280,15 Q290,18 300,15 T320,15 Q330,5 340,15 T360,15 Q370,12 380,15 T400,15 Q410,20 420,15 T440,15 Q450,6 460,15 T480,15 Q490,16 500,15 T520,15 Q530,8 540,15 T560,15 Q570,20 580,15 T600,15 Q610,10 620,15 T640,15 Q650,5 660,15 T680,15 Q690,18 700,15 T720,15 Q730,12 740,15 T760,15 Q770,7 780,15 T800,15 Q810,20 820,15 T840,15 Q850,9 860,15 T880,15 Q890,14 900,15 T920,15 Q930,6 940,15 T960,15 Q970,19 980,15 T1000,15 Q1010,11 1020,15 T1040,15 Q1050,5 1060,15 T1080,15 Q1090,17 1100,15 T1120,15 Q1130,8 1140,15 T1160,15 Q1170,13 1180,15 T1200,15 Q1210,20 1220,15 T1240,15 Q1250,7 1260,15 T1280,15 Q1290,16 1300,15 T1320,15 Q1330,10 1340,15 T1360,15 Q1370,5 1380,15 T1400,15 Q1410,18 1420,15 T1440,15 L1440,0 Z"
+            fill="#ffffff" stroke="none"/>
+            <path d="M0,30 L0,15 Q10,5 20,15 T40,15 Q50,5 60,15 T80,15 Q90,20 100,15 T120,15 Q130,10 140,15 T160,15 Q170,5 180,15 T200,15 Q210,20 220,15 T240,15 Q250,8 260,15 T280,15 Q290,18 300,15 T320,15 Q330,5 340,15 T360,15 Q370,12 380,15 T400,15 Q410,20 420,15 T440,15 Q450,6 460,15 T480,15 Q490,16 500,15 T520,15 Q530,8 540,15 T560,15 Q570,20 580,15 T600,15 Q610,10 620,15 T640,15 Q650,5 660,15 T680,15 Q690,18 700,15 T720,15 Q730,12 740,15 T760,15 Q770,7 780,15 T800,15 Q810,20 820,15 T840,15 Q850,9 860,15 T880,15 Q890,14 900,15 T920,15 Q930,6 940,15 T960,15 Q970,19 980,15 T1000,15 Q1010,11 1020,15 T1040,15 Q1050,5 1060,15 T1080,15 Q1090,17 1100,15 T1120,15 Q1130,8 1140,15 T1160,15 Q1170,13 1180,15 T1200,15 Q1210,20 1220,15 T1240,15 Q1250,7 1260,15 T1280,15 Q1290,16 1300,15 T1320,15 Q1330,10 1340,15 T1360,15 Q1370,5 1380,15 T1400,15 Q1410,18 1420,15 T1440,15 L1440,30 Z"
+            fill="#d0d0d0" stroke="none"/>
+            <path d="M0,15 Q10,5 20,15 T40,15 Q50,5 60,15 T80,15 Q90,20 100,15 T120,15 Q130,10 140,15 T160,15 Q170,5 180,15 T200,15 Q210,20 220,15 T240,15 Q250,8 260,15 T280,15 Q290,18 300,15 T320,15 Q330,5 340,15 T360,15 Q370,12 380,15 T400,15 Q410,20 420,15 T440,15 Q450,6 460,15 T480,15 Q490,16 500,15 T520,15 Q530,8 540,15 T560,15 Q570,20 580,15 T600,15 Q610,10 620,15 T640,15 Q650,5 660,15 T680,15 Q690,18 700,15 T720,15 Q730,12 740,15 T760,15 Q770,7 780,15 T800,15 Q810,20 820,15 T840,15 Q850,9 860,15 T880,15 Q890,14 900,15 T920,15 Q930,6 940,15 T960,15 Q970,19 980,15 T1000,15 Q1010,11 1020,15 T1040,15 Q1050,5 1060,15 T1080,15 Q1090,17 1100,15 T1120,15 Q1130,8 1140,15 T1160,15 Q1170,13 1180,15 T1200,15 Q1210,20 1220,15 T1240,15 Q1250,7 1260,15 T1280,15 Q1290,16 1300,15 T1320,15 Q1330,10 1340,15 T1360,15 Q1370,5 1380,15 T1400,15 Q1410,18 1420,15 T1440,15"
+            fill="none" stroke="var(--border)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </div>
+
+    <div class="page-gap"></div>
+
+    <div class="paper-tear paper-tear-bottom">
+        <svg width="100%" height="30" viewBox="0 0 1440 30" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,0 L0,15 Q10,5 20,15 T40,15 Q50,5 60,15 T80,15 Q90,20 100,15 T120,15 Q130,10 140,15 T160,15 Q170,5 180,15 T200,15 Q210,20 220,15 T240,15 Q250,8 260,15 T280,15 Q290,18 300,15 T320,15 Q330,5 340,15 T360,15 Q370,12 380,15 T400,15 Q410,20 420,15 T440,15 Q450,6 460,15 T480,15 Q490,16 500,15 T520,15 Q530,8 540,15 T560,15 Q570,20 580,15 T600,15 Q610,10 620,15 T640,15 Q650,5 660,15 T680,15 Q690,18 700,15 T720,15 Q730,12 740,15 T760,15 Q770,7 780,15 T800,15 Q810,20 820,15 T840,15 Q850,9 860,15 T880,15 Q890,14 900,15 T920,15 Q930,6 940,15 T960,15 Q970,19 980,15 T1000,15 Q1010,11 1020,15 T1040,15 Q1050,5 1060,15 T1080,15 Q1090,17 1100,15 T1120,15 Q1130,8 1140,15 T1160,15 Q1170,13 1180,15 T1200,15 Q1210,20 1220,15 T1240,15 Q1250,7 1260,15 T1280,15 Q1290,16 1300,15 T1320,15 Q1330,10 1340,15 T1360,15 Q1370,5 1380,15 T1400,15 Q1410,18 1420,15 T1440,15 L1440,0 Z"
+            fill="#d0d0d0" stroke="none"/>
+            <path d="M0,30 L0,15 Q10,5 20,15 T40,15 Q50,5 60,15 T80,15 Q90,20 100,15 T120,15 Q130,10 140,15 T160,15 Q170,5 180,15 T200,15 Q210,20 220,15 T240,15 Q250,8 260,15 T280,15 Q290,18 300,15 T320,15 Q330,5 340,15 T360,15 Q370,12 380,15 T400,15 Q410,20 420,15 T440,15 Q450,6 460,15 T480,15 Q490,16 500,15 T520,15 Q530,8 540,15 T560,15 Q570,20 580,15 T600,15 Q610,10 620,15 T640,15 Q650,5 660,15 T680,15 Q690,18 700,15 T720,15 Q730,12 740,15 T760,15 Q770,7 780,15 T800,15 Q810,20 820,15 T840,15 Q850,9 860,15 T880,15 Q890,14 900,15 T920,15 Q930,6 940,15 T960,15 Q970,19 980,15 T1000,15 Q1010,11 1020,15 T1040,15 Q1050,5 1060,15 T1080,15 Q1090,17 1100,15 T1120,15 Q1130,8 1140,15 T1160,15 Q1170,13 1180,15 T1200,15 Q1210,20 1220,15 T1240,15 Q1250,7 1260,15 T1280,15 Q1290,16 1300,15 T1320,15 Q1330,10 1340,15 T1360,15 Q1370,5 1380,15 T1400,15 Q1410,18 1420,15 T1440,15 L1440,30 Z"
+            fill="#ffffff" stroke="none"/>
+            <path d="M0,15 Q10,5 20,15 T40,15 Q50,5 60,15 T80,15 Q90,20 100,15 T120,15 Q130,10 140,15 T160,15 Q170,5 180,15 T200,15 Q210,20 220,15 T240,15 Q250,8 260,15 T280,15 Q290,18 300,15 T320,15 Q330,5 340,15 T360,15 Q370,12 380,15 T400,15 Q410,20 420,15 T440,15 Q450,6 460,15 T480,15 Q490,16 500,15 T520,15 Q530,8 540,15 T560,15 Q570,20 580,15 T600,15 Q610,10 620,15 T640,15 Q650,5 660,15 T680,15 Q690,18 700,15 T720,15 Q730,12 740,15 T760,15 Q770,7 780,15 T800,15 Q810,20 820,15 T840,15 Q850,9 860,15 T880,15 Q890,14 900,15 T920,15 Q930,6 940,15 T960,15 Q970,19 980,15 T1000,15 Q1010,11 1020,15 T1040,15 Q1050,5 1060,15 T1080,15 Q1090,17 1100,15 T1120,15 Q1130,8 1140,15 T1160,15 Q1170,13 1180,15 T1200,15 Q1210,20 1220,15 T1240,15 Q1250,7 1260,15 T1280,15 Q1290,16 1300,15 T1320,15 Q1330,10 1340,15 T1360,15 Q1370,5 1380,15 T1400,15 Q1410,18 1420,15 T1440,15"
+            fill="none" stroke="var(--border)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </div>
+
+    <div class="tear-tape-sticker"></div>
+
+    <div class="container">
+
+        <section class="section" id="about">
+            <h2 class="section-title">ABOUT</h2>
+            <div class="card">
+                <p class="text">
+                    I am a <span class="highlight highlight-yellow">Computer Science Engineering student</span> skilled in <span class="highlight highlight-pink">MERN stack development</span>, REST API integration, and responsive web applications.
+                    I have practical experience building full-stack and AR-based projects using <span class="highlight highlight-cyan">React.js, Node.js, MongoDB, and Three.js</span>.
+                </p>
+                <p class="text">
+                    I am highly passionate about <span class="highlight highlight-green">continuous learning and exploring new technologies</span> like Augmented Reality (AR.js) and 3D web graphics.
+                </p>
+                <p class="text">
+                    I am currently seeking <span class="highlight highlight-yellow">software development internship opportunities</span> where I can contribute my skills, collaborate with teams, and build impactful software solutions.
+                </p>
+            </div>
+        </section>
+
+        <section class="section journey-section" id="experience">
+            <h2 class="section-title-center">My Journey</h2>
+            <div class="journey-container">
+                <div class="journey-timeline">
+                    <h3 class="timeline-header">Education & Activities</h3>
+            <div class="timeline-list">
+                <div class="timeline-item-flat" id="exp-1" data-location="Vadodara">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content-flat">
+                        <h4 class="timeline-title">B.Tech - Computer Science Engineering</h4>
+                        <p class="timeline-date">2023 - 2027 (Expected)</p>
+                        <p class="timeline-description">
+                            Currently pursuing Bachelor of Engineering (B.Tech.) at Parul University. Focus areas include software engineering, databases, web development, and object-oriented programming.
                         </p>
-                        <div class="hero-ctas scroll-reveal" style="display: flex; flex-direction: column; gap: 15px;">
-                            <div style="display: flex; flex-wrap: wrap; gap: 15px;">
-                                <!-- Dynamic Resume Download -->
-                                <a href="/api/resume/download" class="cyber-btn primary" download="Soham_Neswankar_Resume.pdf">
-                                    <span class="btn-glow"></span>
-                                    <span class="btn-text"><i class="fa-solid fa-file-arrow-down"></i> Download Resume</span>
-                                </a>
-                                <!-- Contact Link -->
-                                <a href="#contact" class="cyber-btn secondary">
-                                    <span class="btn-text"><i class="fa-solid fa-link"></i> Connect Protocol</span>
-                                </a>
-                            </div>
+                        <p class="timeline-location"><i class="fas fa-map-marker-alt"></i> Parul University, Vadodara, India</p>
+                    </div>
+                </div>
+                <div class="timeline-item-flat" id="exp-5" data-location="Vadodara">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content-flat">
+                        <h4 class="timeline-title">Hackathon 2025 Participant</h4>
+                        <p class="timeline-date">2025</p>
+                        <p class="timeline-description">
+                            Participated in Hackathon 2025 and developed an innovative tech solution under competitive conditions.
+                        </p>
+                        <p class="timeline-location"><i class="fas fa-map-marker-alt"></i> Parul University, Vadodara, India</p>
+                    </div>
+                </div>
+                <div class="timeline-item-flat" id="exp-2" data-location="Thane">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content-flat">
+                        <h4 class="timeline-title">Higher Secondary Certificate (HSC)</h4>
+                        <p class="timeline-date">Graduated: 2023</p>
+                        <p class="timeline-description">
+                            Completed higher secondary school education with science focus.
+                        </p>
+                        <p class="timeline-location"><i class="fas fa-map-marker-alt"></i> R. K. Talreja College, Thane, Maharashtra</p>
+                    </div>
+                </div>
+                <div class="timeline-item-flat" id="exp-3" data-location="Kalyan">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content-flat">
+                        <h4 class="timeline-title">Secondary School Certificate (SSC)</h4>
+                        <p class="timeline-date">Graduated: 2021</p>
+                        <p class="timeline-description">
+                            Completed school education with top marks.
+                        </p>
+                        <p class="timeline-location"><i class="fas fa-map-marker-alt"></i> St. Jude's High School, Kalyan, Maharashtra</p>
+                    </div>
+                </div>
+                <div class="timeline-item-flat" id="exp-4" data-location="Vadodara">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content-flat">
+                        <h4 class="timeline-title">Event Coordinator @ Dhoom</h4>
+                        <p class="timeline-date">2024</p>
+                        <p class="timeline-description">
+                            Served as Event Coordinator for the college cultural festival Dhoom at Parul University, demonstrating leadership, planning, and management skills.
+                        </p>
+                        <p class="timeline-location"><i class="fas fa-map-marker-alt"></i> Vadodara, India</p>
+                    </div>
+                </div>
+            </div>
+                </div>
+                <div class="journey-timeline-back">
+                    <svg class="treasure-map-svg" viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Aged paper background -->
+                        <rect width="400" height="600" fill="#f4e7d7"/>
+
+                        <!-- Compass Rose -->
+                        <g transform="translate(320, 80)">
+                            <circle cx="0" cy="0" r="35" fill="none" stroke="#8B4513" stroke-width="2"/>
+                            <circle cx="0" cy="0" r="30" fill="none" stroke="#8B4513" stroke-width="1"/>
+                            <!-- N -->
+                            <polygon points="0,-30 5,-10 -5,-10" fill="#D2691E"/>
+                            <!-- S -->
+                            <polygon points="0,30 5,10 -5,10" fill="#8B4513"/>
+                            <!-- E -->
+                            <polygon points="30,0 10,5 10,-5" fill="#8B4513"/>
+                            <!-- W -->
+                            <polygon points="-30,0 -10,5 -10,-5" fill="#8B4513"/>
+                            <text x="0" y="-40" text-anchor="middle" font-size="16" font-weight="bold" fill="#8B4513">N</text>
+                        </g>
+
+                        <!-- Dotted path route -->
+                        <path d="M 80,150 Q 120,200 100,250 T 140,350 Q 160,400 200,420"
+                              stroke="#D2691E" stroke-width="3" fill="none"
+                              stroke-dasharray="8,8" stroke-linecap="round"/>
+
+                        <!-- Location markers -->
+                        <circle cx="80" cy="150" r="8" fill="#8B4513" stroke="#654321" stroke-width="2"/>
+                        <circle cx="100" cy="250" r="8" fill="#8B4513" stroke="#654321" stroke-width="2"/>
+                        <circle cx="140" cy="350" r="8" fill="#8B4513" stroke="#654321" stroke-width="2"/>
+
+                        <!-- X marks the spot -->
+                        <g transform="translate(200, 420)">
+                            <circle cx="0" cy="0" r="25" fill="#FFD700" opacity="0.3"/>
+                            <line x1="-15" y1="-15" x2="15" y2="15" stroke="#DC143C" stroke-width="4" stroke-linecap="round"/>
+                            <line x1="15" y1="-15" x2="-15" y2="15" stroke="#DC143C" stroke-width="4" stroke-linecap="round"/>
+                        </g>
+
+                        <!-- Mountains -->
+                        <g opacity="0.4">
+                            <polygon points="250,200 270,150 290,200" fill="#8B4513"/>
+                            <polygon points="280,200 300,160 320,200" fill="#A0522D"/>
+                            <polygon points="220,220 245,170 270,220" fill="#8B4513"/>
+                        </g>
+
+                        <!-- Trees -->
+                        <g opacity="0.4">
+                            <polygon points="100,450 110,420 120,450" fill="#228B22"/>
+                            <rect x="108" y="450" width="4" height="15" fill="#8B4513"/>
+                            <polygon points="150,480 160,450 170,480" fill="#228B22"/>
+                            <rect x="158" y="480" width="4" height="15" fill="#8B4513"/>
+                            <polygon points="70,500 80,470 90,500" fill="#228B22"/>
+                            <rect x="78" y="500" width="4" height="15" fill="#8B4513"/>
+                        </g>
+
+                        <!-- Waves/Water -->
+                        <g opacity="0.3">
+                            <path d="M 40,300 Q 50,295 60,300 T 80,300" stroke="#4682B4" stroke-width="2" fill="none"/>
+                            <path d="M 40,310 Q 50,305 60,310 T 80,310" stroke="#4682B4" stroke-width="2" fill="none"/>
+                            <path d="M 280,520 Q 290,515 300,520 T 320,520" stroke="#4682B4" stroke-width="2" fill="none"/>
+                            <path d="M 280,530 Q 290,525 300,530 T 320,530" stroke="#4682B4" stroke-width="2" fill="none"/>
+                        </g>
+
+                        <!-- Decorative border -->
+                        <rect x="10" y="10" width="380" height="580" fill="none"
+                              stroke="#8B4513" stroke-width="3" stroke-dasharray="10,5"/>
+                    </svg>
+                </div>
+                <div class="journey-map-container">
+                    <div id="journey-map"></div>
+                    <svg class="map-overlay-lines" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
+                                <path d="M 80 0 L 0 0 0 80" fill="none" stroke="#000" stroke-width="2" opacity="0.8"/>
+                            </pattern>
+                            <pattern id="scratches" width="200" height="200" patternUnits="userSpaceOnUse">
+                                <line x1="10" y1="20" x2="60" y2="25" stroke="#000" stroke-width="2" opacity="0.7"/>
+                                <line x1="100" y1="50" x2="180" y2="48" stroke="#000" stroke-width="1.5" opacity="0.6"/>
+                                <line x1="30" y1="120" x2="90" y2="115" stroke="#000" stroke-width="2" opacity="0.7"/>
+                                <line x1="140" y1="160" x2="195" y2="165" stroke="#000" stroke-width="1.5" opacity="0.6"/>
+                                <line x1="5" y1="180" x2="45" y2="175" stroke="#000" stroke-width="1.5" opacity="0.6"/>
+                            </pattern>
+                        </defs>
+                        <rect width="100%" height="100%" fill="url(#grid)"/>
+                        <rect width="100%" height="100%" fill="url(#scratches)"/>
+                    </svg>
+                    <img src="image/pirat.png" alt="Pirate" class="map-pirate-overlay" width="200" height="200" loading="lazy">
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="skills">
+            <h2 class="section-title">SKILLS</h2>
+
+            <div class="skills-grid-modern">
+                <div class="skill-box">
+                    <div class="skill-box-header">
+                        <i class="fab fa-react skill-icon-large"></i>
+                        <h3 class="skill-box-title">Frontend</h3>
+                    </div>
+                    <div class="tech-tags">
+                        <span class="tag"><i class="fab fa-react"></i> React.js</span>
+                        <span class="tag"><i class="fab fa-html5"></i> HTML5</span>
+                        <span class="tag"><i class="fab fa-css3-alt"></i> CSS3</span>
+                        <span class="tag"><i class="fas fa-mobile-alt"></i> Responsive Design</span>
+                    </div>
+                </div>
+
+                <div class="skill-box">
+                    <div class="skill-box-header">
+                        <i class="fas fa-code skill-icon-large"></i>
+                        <h3 class="skill-box-title">Languages</h3>
+                    </div>
+                    <div class="tech-tags">
+                        <span class="tag"><i class="fab fa-js"></i> JavaScript</span>
+                        <span class="tag"><i class="fab fa-java"></i> Java</span>
+                        <span class="tag"><i class="fab fa-python"></i> Python</span>
+                        <span class="tag"><i class="fas fa-terminal"></i> C</span>
+                        <span class="tag"><i class="fas fa-terminal"></i> C++</span>
+                    </div>
+                </div>
+
+                <div class="skill-box">
+                    <div class="skill-box-header">
+                        <i class="fab fa-node skill-icon-large"></i>
+                        <h3 class="skill-box-title">Backend</h3>
+                    </div>
+                    <div class="tech-tags">
+                        <span class="tag"><i class="fab fa-node-js"></i> Node.js</span>
+                        <span class="tag"><i class="fas fa-server"></i> Express.js</span>
+                        <span class="tag"><i class="fas fa-project-diagram"></i> REST APIs</span>
+                    </div>
+                </div>
+
+                <div class="skill-box">
+                    <div class="skill-box-header">
+                        <i class="fas fa-database skill-icon-large"></i>
+                        <h3 class="skill-box-title">Database</h3>
+                    </div>
+                    <div class="tech-tags">
+                        <span class="tag"><i class="fas fa-leaf"></i> MongoDB</span>
+                    </div>
+                </div>
+
+                <div class="skill-box">
+                    <div class="skill-box-header">
+                        <i class="fas fa-tools skill-icon-large"></i>
+                        <h3 class="skill-box-title">Tools & AR</h3>
+                    </div>
+                    <div class="tech-tags">
+                        <span class="tag"><i class="fab fa-git-alt"></i> Git</span>
+                        <span class="tag"><i class="fab fa-github"></i> GitHub</span>
+                        <span class="tag"><i class="fas fa-cube"></i> Three.js</span>
+                        <span class="tag"><i class="fas fa-vr-cardboard"></i> AR.js</span>
+                    </div>
+                </div>
+
+                <div class="skill-box highlight-box">
+                    <div class="skill-box-header">
+                        <i class="fas fa-award skill-icon-large"></i>
+                        <h3 class="skill-box-title">Certifications</h3>
+                    </div>
+                    <div class="tech-tags">
+                        <span class="tag"><i class="fas fa-network-wired"></i> Computer Networks – NPTEL | 2024</span>
+                        <span class="tag"><i class="fab fa-aws"></i> AWS Academy Cloud Foundations – AWS Academy | 2025</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section section-compact" id="projects">
+            <div class="creator-showcase">
+                <p class="creator-label">Featured Projects</p>
+                <div class="creator-projects-grid">
+                    <div class="creator-item">
+                        <a href="https://github.com/SOHAM5128/ar-virtual-trial-room" target="_blank" class="creator-project">
+                            <span class="creator-name" style="font-size: 2rem;"><i class="fas fa-vr-cardboard"></i> AR Trial Room</span>
+                        </a>
+                        <p class="creator-tagline">AR-based virtual trial room website using React.js, Three.js, AR.js, Node.js, Express.js, and MongoDB.</p>
+                        <a href="https://github.com/SOHAM5128/ar-virtual-trial-room" target="_blank" class="creator-github"><i class="fab fa-github"></i> View Repo</a>
+                    </div>
+                    <div class="creator-item">
+                        <a href="https://github.com/SOHAM5128/ai-interview-preparation" target="_blank" class="creator-project">
+                            <span class="creator-name" style="font-size: 2rem;"><i class="fas fa-robot"></i> AI Interview Prep System</span>
+                        </a>
+                        <p class="creator-tagline">AI-powered platform to practice mock interviews with real-time feedback, simulated scenarios, and response analysis.</p>
+                        <a href="https://github.com/SOHAM5128/ai-interview-preparation" target="_blank" class="creator-github"><i class="fab fa-github"></i> View Repo</a>
+                    </div>
+                    <div class="creator-item">
+                        <a href="https://github.com/SOHAM5128/portfolio-website" target="_blank" class="creator-project">
+                            <span class="creator-name" style="font-size: 2rem;"><i class="fas fa-user-circle"></i> Portfolio Website</span>
+                        </a>
+                        <p class="creator-tagline">A responsive portfolio website to showcase projects, certifications, and technical skills using React.js.</p>
+                        <a href="https://github.com/SOHAM5128/portfolio-website" target="_blank" class="creator-github"><i class="fab fa-github"></i> View Repo</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section education-languages-section">
+            <div class="education-languages-grid">
+                <div class="education-column">
+                    <h2 class="section-title">EDUCATION</h2>
+                    <div class="card education-card">
+                        <div class="education-header">
                             <div>
-                                <!-- View Projects -->
-                                <a href="#projects" class="cyber-btn secondary" style="width: fit-content;">
-                                    <span class="btn-text">View Projects <i class="fa-solid fa-chevron-right"></i></span>
-                                </a>
+                                <h3 class="education-title">B.Tech - Computer Science Engineering</h3>
+                                <p class="education-school">Parul University</p>
                             </div>
+                            <span class="badge">2023 - 2027</span>
                         </div>
+                        <p class="education-location"><i class="fas fa-map-marker-alt"></i> Vadodara, Gujarat, India</p>
                     </div>
-
-                    <!-- Right Side: Professional Avatar HUD Identity Card -->
-                    <div class="hero-avatar-side">
-                        <div id="avatar-3d-container" class="scroll-reveal">
-                            <canvas id="avatar-3d-canvas"></canvas>
+                    <div class="card education-card" style="margin-top: 15px;">
+                        <div class="education-header">
+                            <div>
+                                <h3 class="education-title">Higher Secondary Certificate (HSC)</h3>
+                                <p class="education-school">R. K. Talreja College of Arts, Science & Commerce</p>
+                            </div>
+                            <span class="badge">2021 - 2023</span>
                         </div>
+                        <p class="education-location"><i class="fas fa-map-marker-alt"></i> Thane, Maharashtra, India</p>
                     </div>
-                </div>
-            </div>
-
-            <!-- Scroll Indicator -->
-            <div class="scroll-down-hud">
-                <div class="mouse-icon">
-                    <span class="mouse-wheel"></span>
-                </div>
-                <div class="scroll-label">SCROLL_DOWN</div>
-            </div>
-        </section>
-
-        <!-- 2. About Section -->
-        <section id="about" class="section-padding">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title" data-text="01. ABOUT_ME">01. ABOUT_ME</h2>
-                    <div class="section-line"></div>
-                </div>
- 
-                <div class="about-grid">
-                    <!-- Bio Column -->
-                    <div class="about-text scroll-reveal">
-                        <h3 class="cyber-heading">CORE PROFILE // SOHAM NESWANKAR</h3>
-                        <p class="about-paragraph" style="margin-bottom: 25px;">
-                            I am a Computer Science Engineering student at <span class="highlight">Parul University</span> (Expected Graduation: 2027). As an aspiring software engineer, I focus on constructing high-performance digital ecosystems and bridging core computing architecture with immersive frontend interactions.
-                        </p>
- 
-                        <div class="about-details-list" style="display: flex; flex-direction: column; gap: 15px; border-top: 1px solid var(--glass-border); padding-top: 20px; margin-bottom: 30px;">
-                            <div class="detail-item" style="line-height: 1.6; font-size: 0.95rem;">
-                                <span style="color: var(--neon-cyan); font-family: var(--font-cyber); font-weight: 800; margin-right: 8px; letter-spacing: 0.5px;">[TECHNOLOGIES]</span>
-                                <span style="color: var(--text-muted);">MERN Stack (React.js, Node.js, Express.js, MongoDB), Java, JavaScript, Python, C, C++, Git, GitHub, REST APIs, Three.js, and AR.js.</span>
+                    <div class="card education-card" style="margin-top: 15px;">
+                        <div class="education-header">
+                            <div>
+                                <h3 class="education-title">Secondary School Certificate (SSC)</h3>
+                                <p class="education-school">St. Jude's High School</p>
                             </div>
-                            <div class="detail-item" style="line-height: 1.6; font-size: 0.95rem;">
-                                <span style="color: var(--neon-cyan); font-family: var(--font-cyber); font-weight: 800; margin-right: 8px; letter-spacing: 0.5px;">[INTERESTS]</span>
-                                <span style="color: var(--text-muted);">Full-stack development, Augmented Reality (AR) systems, 3D graphics on the web, and responsive human-centric user experience design.</span>
-                            </div>
-                            <div class="detail-item" style="line-height: 1.6; font-size: 0.95rem;">
-                                <span style="color: var(--neon-cyan); font-family: var(--font-cyber); font-weight: 800; margin-right: 8px; letter-spacing: 0.5px;">[CAREER_GOALS]</span>
-                                <span style="color: var(--text-muted);">Securing a software development internship to solve real-world architectural complexities, engineer scalable client-server pipelines, and contribute to progressive dev teams.</span>
-                            </div>
+                            <span class="badge">Class of 2021</span>
                         </div>
+                        <p class="education-location"><i class="fas fa-map-marker-alt"></i> Kalyan, Maharashtra, India</p>
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <!-- 3. Skills Section -->
-        <section id="skills" class="section-padding section-alt">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title" data-text="02. TECH_ABILITIES">02. TECH_ABILITIES</h2>
-                    <div class="section-line"></div>
-                </div>
-
-                <div class="skills-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 25px;">
-                    <!-- Languages Panel -->
-                    <div class="skill-card scroll-reveal" data-tilt data-tilt-max="10">
-                        <div class="card-glow"></div>
-                        <div class="skill-icon"><i class="fa-solid fa-code"></i></div>
-                        <h3 class="skill-title">LANGUAGES</h3>
-                        
-                        <div class="skill-list-hologram">
-                            <div class="skill-item-hud">
-                                <span class="skill-item-name">> Java</span>
-                                <div class="skill-item-bar"><span class="bar-fill" data-width="90%"></span></div>
-                            </div>
-                            <div class="skill-item-hud">
-                                <span class="skill-item-name">> JavaScript</span>
-                                <div class="skill-item-bar"><span class="bar-fill" data-width="95%"></span></div>
-                            </div>
-                            <div class="skill-item-hud">
-                                <span class="skill-item-name">> Python</span>
-                                <div class="skill-item-bar"><span class="bar-fill" data-width="80%"></span></div>
-                            </div>
-                            <div class="skill-item-hud">
-                                <span class="skill-item-name">> C</span>
-                                <div class="skill-item-bar"><span class="bar-fill" data-width="75%"></span></div>
-                            </div>
-                            <div class="skill-item-hud">
-                                <span class="skill-item-name">> C++</span>
-                                <div class="skill-item-bar"><span class="bar-fill" data-width="75%"></span></div>
+                <div class="languages-column">
+                    <h2 class="section-title">LANGUAGES</h2>
+                    <div class="card languages-card">
+                        <div class="language-item">
+                            <span class="language-name-inline">English</span>
+                            <div class="language-stars">
+                                <span class="star filled"></span>
+                                <span class="star filled"></span>
+                                <span class="star filled"></span>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Frontend Panel -->
-                    <div class="skill-card scroll-reveal" data-tilt data-tilt-max="10">
-                        <div class="card-glow"></div>
-                        <div class="skill-icon"><i class="fa-solid fa-display"></i></div>
-                        <h3 class="skill-title">FRONTEND</h3>
-                        
-                        <div class="skill-list-hologram">
-                            <div class="skill-item-hud">
-                                <span class="skill-item-name">> React.js</span>
-                                <div class="skill-item-bar"><span class="bar-fill" data-width="95%"></span></div>
-                            </div>
-                            <div class="skill-item-hud">
-                                <span class="skill-item-name">> HTML5</span>
-                                <div class="skill-item-bar"><span class="bar-fill" data-width="95%"></span></div>
-                            </div>
-                            <div class="skill-item-hud">
-                                <span class="skill-item-name">> CSS3</span>
-                                <div class="skill-item-bar"><span class="bar-fill" data-width="90%"></span></div>
-                            </div>
-                            <div class="skill-item-hud">
-                                <span class="skill-item-name">> JavaScript</span>
-                                <div class="skill-item-bar"><span class="bar-fill" data-width="95%"></span></div>
+                        <div class="language-item">
+                            <span class="language-name-inline">Hindi</span>
+                            <div class="language-stars">
+                                <span class="star filled"></span>
+                                <span class="star filled"></span>
+                                <span class="star filled"></span>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Backend Panel -->
-                    <div class="skill-card scroll-reveal" data-tilt data-tilt-max="10">
-                        <div class="card-glow"></div>
-                        <div class="skill-icon"><i class="fa-solid fa-server"></i></div>
-                        <h3 class="skill-title">BACKEND</h3>
-                        
-                        <div class="skill-list-hologram">
-                            <div class="skill-item-hud">
-                                <span class="skill-item-name">> Node.js</span>
-                                <div class="skill-item-bar"><span class="bar-fill" data-width="85%"></span></div>
-                            </div>
-                            <div class="skill-item-hud">
-                                <span class="skill-item-name">> Express.js</span>
-                                <div class="skill-item-bar"><span class="bar-fill" data-width="85%"></span></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Database Panel -->
-                    <div class="skill-card scroll-reveal" data-tilt data-tilt-max="10">
-                        <div class="card-glow"></div>
-                        <div class="skill-icon"><i class="fa-solid fa-database"></i></div>
-                        <h3 class="skill-title">DATABASE</h3>
-                        
-                        <div class="skill-list-hologram">
-                            <div class="skill-item-hud" style="margin-bottom: 8px;">
-                                <span class="skill-item-name">> MongoDB</span>
-                                <div class="skill-item-bar"><span class="bar-fill" data-width="90%"></span></div>
-                            </div>
-                            <div class="skill-item-hud">
-                                <span class="skill-item-name">> MySQL</span>
-                                <div class="skill-item-bar"><span class="bar-fill" data-width="85%"></span></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tools & Technologies Panel -->
-                    <div class="skill-card scroll-reveal" data-tilt data-tilt-max="10">
-                        <div class="card-glow"></div>
-                        <div class="skill-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
-                        <h3 class="skill-title">TOOLS & TECHNOLOGIES</h3>
-                        
-                        <div class="skill-list-hologram" style="margin-top: 10px;">
-                            <div class="skill-item-hud" style="margin-bottom: 8px;">
-                                <span class="skill-item-name">> Git</span>
-                                <div class="skill-item-bar"><span class="bar-fill" data-width="95%"></span></div>
-                            </div>
-                            <div class="skill-item-hud" style="margin-bottom: 8px;">
-                                <span class="skill-item-name">> GitHub</span>
-                                <div class="skill-item-bar"><span class="bar-fill" data-width="95%"></span></div>
-                            </div>
-                            <div class="skill-item-hud" style="margin-bottom: 8px;">
-                                <span class="skill-item-name">> REST APIs</span>
-                                <div class="skill-item-bar"><span class="bar-fill" data-width="90%"></span></div>
-                            </div>
-                            <div class="skill-item-hud" style="margin-bottom: 8px;">
-                                <span class="skill-item-name">> Three.js</span>
-                                <div class="skill-item-bar"><span class="bar-fill" data-width="85%"></span></div>
-                            </div>
-                            <div class="skill-item-hud" style="margin-bottom: 8px;">
-                                <span class="skill-item-name">> AR.js</span>
-                                <div class="skill-item-bar"><span class="bar-fill" data-width="80%"></span></div>
-                            </div>
-                            <div class="skill-item-hud" style="margin-bottom: 8px;">
-                                <span class="skill-item-name">> Responsive Web Design</span>
-                                <div class="skill-item-bar"><span class="bar-fill" data-width="95%"></span></div>
+                        <div class="language-item">
+                            <span class="language-name-inline">Marathi</span>
+                            <div class="language-stars">
+                                <span class="star filled"></span>
+                                <span class="star filled"></span>
+                                <span class="star filled"></span>
                             </div>
                         </div>
                     </div>
@@ -349,443 +629,722 @@
             </div>
         </section>
 
-        <!-- 4. Projects Section -->
-        <section id="projects" class="section-padding">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title" data-text="03. DEPLOYED_WORK">03. DEPLOYED_WORK</h2>
-                    <div class="section-line"></div>
-                </div>
-
-                <!-- Project Filtering Controls -->
-                <div class="project-filters scroll-reveal">
-                    <button class="filter-btn active" data-filter="all">ALL_SYSTEMS</button>
-                    <button class="filter-btn" data-filter="mern">MERN_STACK</button>
-                    <button class="filter-btn" data-filter="threejs">3D_GRAPHICS</button>
-                </div>
-
-                <div class="projects-grid">
-                    <!-- Project 1: AR Virtual Trial Room Website -->
-                    <article class="project-card scroll-reveal" data-category="threejs mern" data-tilt data-tilt-max="10">
-                        <div class="project-img-wrapper">
-                            <div class="project-visual-mock" style="background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);">
-                                <div class="frequency-bars">
-                                    <span class="f-bar"></span>
-                                    <span class="f-bar"></span>
-                                    <span class="f-bar"></span>
-                                    <span class="f-bar"></span>
-                                    <span class="f-bar"></span>
-                                </div>
-                                <span class="mock-tag">AR TRY-ON ENGINE</span>
-                            </div>
-                        </div>
-                        <div class="project-content">
-                            <h3 class="project-title">PROJECT_01 // AR_VIRTUAL_TRIAL</h3>
-                            <p class="project-desc" style="font-size: 0.92rem; line-height: 1.5; margin-bottom: 15px;">
-                                • Built an AR-based virtual trial room application using React.js, Three.js, and AR.js.<br>
-                                • Implemented real-time camera overlay and responsive user interface for virtual product try-on.<br>
-                                • Developed backend APIs using Node.js, Express.js, and MongoDB.
-                            </p>
-                            <div class="project-tags" style="margin-bottom: 15px;">
-                                <span class="tag">React.js</span>
-                                <span class="tag">Three.js</span>
-                                <span class="tag">AR.js</span>
-                                <span class="tag">Node.js</span>
-                                <span class="tag">MongoDB</span>
-                            </div>
-                            <div class="project-links">
-                                <a href="https://github.com/SOHAM5128/ar-virtual-trial-room" target="_blank" class="project-link-btn" aria-label="GitHub Repository"><i class="fa-brands fa-github"></i> REPO</a>
-                                <a href="https://codepen.io" target="_blank" class="project-link-btn primary" aria-label="Live Demo"><i class="fa-solid fa-square-rss"></i> DEPLOY</a>
-                            </div>
-                        </div>
-                    </article>
-
-                    <!-- Project 2: Portfolio Website -->
-                    <article class="project-card scroll-reveal" data-category="mern" data-tilt data-tilt-max="10">
-                        <div class="project-img-wrapper">
-                            <div class="project-visual-mock" style="background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);">
-                                <div class="grid-animation"></div>
-                                <div class="floating-circle-cyan"></div>
-                                <div class="floating-circle-purple"></div>
-                                <span class="mock-tag">PORTFOLIO ENGINE</span>
-                            </div>
-                        </div>
-                        <div class="project-content">
-                            <h3 class="project-title">PROJECT_02 // PORTFOLIO_WEBSITE</h3>
-                            <p class="project-desc" style="font-size: 0.92rem; line-height: 1.5; margin-bottom: 15px;">
-                                • Developed a responsive portfolio website to showcase projects, certifications, and technical skills.<br>
-                                • Designed mobile-friendly UI with smooth navigation and optimized responsiveness.<br>
-                                • Implemented modern frontend components using React.js and JavaScript.
-                            </p>
-                            <div class="project-tags" style="margin-bottom: 15px;">
-                                <span class="tag">HTML5</span>
-                                <span class="tag">CSS3</span>
-                                <span class="tag">JavaScript</span>
-                                <span class="tag">React.js</span>
-                                <span class="tag">GitHub</span>
-                            </div>
-                            <div class="project-links">
-                                <a href="https://github.com/SOHAM5128/portfolio-website" target="_blank" class="project-link-btn" aria-label="GitHub Repository"><i class="fa-brands fa-github"></i> REPO</a>
-                                <a href="https://portfolio-fq4kh4dgv-soham5128.vercel.app/" target="_blank" class="project-link-btn primary" aria-label="Live Demo"><i class="fa-solid fa-square-rss"></i> DEPLOY</a>
-                            </div>
-                        </div>
-                    </article>
-
-                    <!-- Project 3: AI Interview Prep -->
-                    <article class="project-card scroll-reveal" data-category="mern" data-tilt data-tilt-max="10">
-                        <div class="project-img-wrapper">
-                            <!-- Visual mock of project instead of placeholder -->
-                            <div class="project-visual-mock" style="background: linear-gradient(135deg, #fae8ff 0%, #fdf4ff 100%);">
-                                <div class="grid-animation" style="opacity: 0.25;"></div>
-                                <div class="floating-circle-purple" style="opacity: 0.15; width: 90px; height: 90px; filter: blur(15px);"></div>
-                                <span class="mock-tag">AI SIMULATION CORE</span>
-                            </div>
-                        </div>
-                        <div class="project-content">
-                            <h3 class="project-title">PROJECT_03 // AI_INTERVIEW_PREP</h3>
-                            <p class="project-desc" style="font-size: 0.92rem; line-height: 1.5; margin-bottom: 15px;">
-                                An intelligent mock interview simulator. Conducts dynamic voice-based practice sessions, evaluates technical depth, and yields detailed analytics.
-                            </p>
-                            <div class="project-tags" style="margin-bottom: 15px;">
-                                <span class="tag">HTML5</span>
-                                <span class="tag">CSS3</span>
-                                <span class="tag">JavaScript</span>
-                                <span class="tag">Python</span>
-                            </div>
-                            <div class="project-links">
-                                <a href="https://github.com/SOHAM5128/AI-Interview-Preparation" target="_blank" class="project-link-btn" aria-label="GitHub Repository"><i class="fa-brands fa-github"></i> REPO</a>
-                                <a href="https://codepen.io" target="_blank" class="project-link-btn primary" aria-label="Live Demo"><i class="fa-solid fa-square-rss"></i> DEPLOY</a>
-                            </div>
-                        </div>
-                    </article>
-
-
-                </div>
-            </div>
-        </section>
-
-        <!-- 5. Timeline Section -->
-        <section id="timeline" class="section-padding section-alt">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title" data-text="04. EDUCATION">04. EDUCATION</h2>
-                    <div class="section-line"></div>
-                </div>
-
-                <div class="timeline-container">
-                    <!-- Circuit-line drawer -->
-                    <div class="timeline-circuit-line">
-                        <div class="timeline-line-glow"></div>
-                    </div>
-
-                    <!-- Timeline Item 1 -->
-                    <div class="timeline-item left scroll-reveal">
-                        <div class="timeline-dot-hud"></div>
-                        <div class="timeline-card" data-tilt data-tilt-max="5">
-                            <div class="timeline-meta">
-                                <span class="timeline-date">2023 - 2027</span>
-                                <span class="timeline-badge">B.TECH</span>
-                            </div>
-                            <h3 class="timeline-title">B.TECH IN COMPUTER SCIENCE</h3>
-                            <h4 class="timeline-subtitle">PARUL UNIVERSITY, VADODARA, INDIA</h4>
-                            <p class="timeline-desc">
-                                Computer Science Engineering student focusing on software design, algorithms, computer graphics, and MERN stack development architectures. Expected Graduation: 2027.
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Timeline Item 2 -->
-                    <div class="timeline-item right scroll-reveal">
-                        <div class="timeline-dot-hud"></div>
-                        <div class="timeline-card" data-tilt data-tilt-max="5">
-                            <div class="timeline-meta">
-                                <span class="timeline-date">2023</span>
-                                <span class="timeline-badge">HSC</span>
-                            </div>
-                            <h3 class="timeline-title">HIGHER SECONDARY CERTIFICATE (HSC)</h3>
-                            <h4 class="timeline-subtitle">R. K. TALREJA COLLEGE OF ARTS, SCIENCE & COMMERCE, THANE, MAHARASHTRA</h4>
-                            <p class="timeline-desc">
-                                Completed high school science division with focus on physics, chemistry, mathematics, and analytical computation.
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Timeline Item 3 -->
-                    <div class="timeline-item left scroll-reveal">
-                        <div class="timeline-dot-hud"></div>
-                        <div class="timeline-card" data-tilt data-tilt-max="5">
-                            <div class="timeline-meta">
-                                <span class="timeline-date">2021</span>
-                                <span class="timeline-badge">SSC</span>
-                            </div>
-                            <h3 class="timeline-title">SECONDARY SCHOOL CERTIFICATE (SSC)</h3>
-                            <h4 class="timeline-subtitle">ST. JUDE'S HIGH SCHOOL, KALYAN, MAHARASHTRA</h4>
-                            <p class="timeline-desc">
-                                Completed secondary education curriculum with academic honors, specializing in fundamental mathematics and computer basics.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 6. Certifications Section -->
-        <section id="certs" class="section-padding">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title" data-text="05. SECURED_CREDENTIALS">05. SECURED_CREDENTIALS</h2>
-                    <div class="section-line"></div>
-                </div>
-
-                <div class="certs-grid">
-                    <!-- Cert 1 -->
-                    <div class="cert-card scroll-reveal" data-tilt data-tilt-max="10">
-                        <div class="cert-glow"></div>
-                        <div class="cert-icon-wrapper">
-                            <i class="fa-solid fa-cloud"></i>
-                        </div>
-                        <div class="cert-content">
-                            <span class="cert-id">CERT_ID: AWS_ACAD_2025</span>
-                            <h3 class="cert-title">AWS ACADEMY CLOUD FOUNDATIONS</h3>
-                            <p class="cert-authority">ISSUED BY: AWS ACADEMY</p>
-                            <div class="cert-meta">
-                                <span>VERIFIED: YES</span>
-                                <span>DATE: 2025</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Cert 2 -->
-                    <div class="cert-card scroll-reveal" data-tilt data-tilt-max="10">
-                        <div class="cert-glow"></div>
-                        <div class="cert-icon-wrapper">
-                            <i class="fa-solid fa-network-wired"></i>
-                        </div>
-                        <div class="cert-content">
-                            <span class="cert-id">CERT_ID: NPTEL_CN_2024</span>
-                            <h3 class="cert-title">COMPUTER NETWORKS SPECIALIZATION</h3>
-                            <p class="cert-authority">ISSUED BY: NPTEL // IIT</p>
-                            <div class="cert-meta">
-                                <span>VERIFIED: YES</span>
-                                <span>DATE: 2024</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 6. Coding Profiles Section -->
-        <section id="profiles" class="section-padding section-alt">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title" data-text="05. CODING_PROFILES">05. CODING_PROFILES</h2>
-                    <div class="section-line"></div>
-                </div>
-
-                <div class="profiles-grid">
-                    <!-- GitHub Card -->
-                    <a href="https://github.com/SOHAM5128" target="_blank" class="profile-card scroll-reveal github" data-tilt data-tilt-max="10">
-                        <div class="profile-glow"></div>
-                        <div class="profile-icon"><i class="fa-brands fa-github"></i></div>
-                        <h3 class="profile-title">GITHUB</h3>
-                        <p class="profile-username">> @SOHAM5128</p>
-                        <div class="profile-stats">
-                            <div class="p-stat"><span>REPOS:</span> <span id="github-repos">12+</span></div>
-                            <div class="p-stat"><span>STARS:</span> <span id="github-stars">24+</span></div>
-                            <div class="p-stat"><span>SYNC:</span> <span class="sync-active">ACTIVE</span></div>
-                        </div>
-                    </a>
-
-                    <!-- LeetCode Card -->
-                    <a href="https://leetcode.com/u/SOHAM_3116" target="_blank" class="profile-card scroll-reveal leetcode" data-tilt data-tilt-max="10">
-                        <div class="profile-glow"></div>
-                        <div class="profile-icon"><i class="fa-solid fa-code"></i></div>
-                        <h3 class="profile-title">LEETCODE</h3>
-                        <p class="profile-username">> @SOHAM_3116</p>
-                        <div class="profile-stats">
-                            <div class="p-stat"><span>SOLVED:</span> <span>250+</span></div>
-                            <div class="p-stat"><span>RANKING:</span> <span>Top 14%</span></div>
-                            <div class="p-stat"><span>RATING:</span> <span>1650</span></div>
-                        </div>
-                    </a>
-
-                    <!-- CodeChef Card -->
-                    <a href="https://www.codechef.com/users/soham_3116" target="_blank" class="profile-card scroll-reveal codechef" data-tilt data-tilt-max="10">
-                        <div class="profile-glow"></div>
-                        <div class="profile-icon"><i class="fa-solid fa-fire"></i></div>
-                        <h3 class="profile-title">CODECHEF</h3>
-                        <p class="profile-username">> @soham_3116</p>
-                        <div class="profile-stats">
-                            <div class="p-stat"><span>RATING:</span> <span>1540+</span></div>
-                            <div class="p-stat"><span>DIVISION:</span> <span>Div 3</span></div>
-                            <div class="p-stat"><span>STARS:</span> <span>3-Star</span></div>
-                        </div>
-                    </a>
-
-                    <!-- HackerRank Card -->
-                    <a href="https://www.hackerrank.com/profile/sohamneswankar" target="_blank" class="profile-card scroll-reveal hackerrank" data-tilt data-tilt-max="10">
-                        <div class="profile-glow"></div>
-                        <div class="profile-icon"><i class="fa-solid fa-award"></i></div>
-                        <h3 class="profile-title">HACKERRANK</h3>
-                        <p class="profile-username">> @sohamneswankar</p>
-                        <div class="profile-stats">
-                            <div class="p-stat"><span>PROBLEM_SOLVING:</span> <span>5-Star</span></div>
-                            <div class="p-stat"><span>JAVA:</span> <span>5-Star</span></div>
-                            <div class="p-stat"><span>CPP:</span> <span>5-Star</span></div>
-                        </div>
-                    </a>
-
-                    <!-- LinkedIn Card -->
-                    <a href="https://linkedin.com" target="_blank" class="profile-card scroll-reveal linkedin" data-tilt data-tilt-max="10">
-                        <div class="profile-glow"></div>
-                        <div class="profile-icon"><i class="fa-brands fa-linkedin-in"></i></div>
-                        <h3 class="profile-title">LINKEDIN</h3>
-                        <p class="profile-username">> @soham-neswankar</p>
-                        <div class="profile-stats">
-                            <div class="p-stat"><span>CONNECTIONS:</span> <span>500+</span></div>
-                            <div class="p-stat"><span>UPLINK:</span> <span>ESTABLISHED</span></div>
-                            <div class="p-stat"><span>NETWORK:</span> <span>ONLINE</span></div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <!-- 7. Contact Section -->
-        <section id="contact" class="section-padding">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title" data-text="06. OPEN_UPLINK">06. OPEN_UPLINK</h2>
-                    <div class="section-line"></div>
-                </div>
-
+        <section class="section" id="contact">
+            <h2 class="section-title">GET IN TOUCH</h2>
+            <div class="contact-container-compact">
+                <p class="contact-intro">Let's build something amazing together</p>
                 <div class="contact-grid">
-                    <!-- Form Column -->
-                    <div class="contact-form-wrapper scroll-reveal">
-                        <div class="cyber-form-container">
-                            <div class="form-hud-header">
-                                <span class="form-title">SECURE_COMMUNICATION_LINK</span>
-                                <span class="form-status">PORT: 8080 // OPEN</span>
-                            </div>
-                            
-                            <form id="contactForm" class="cyber-form">
-                                <div class="form-group">
-                                    <input type="text" id="formName" required placeholder=" " class="cyber-input">
-                                    <label for="formName" class="cyber-label"><span class="label-decor">></span> USERNAME</label>
-                                    <div class="input-line"></div>
-                                </div>
-                                <div class="form-group">
-                                    <input type="email" id="formEmail" required placeholder=" " class="cyber-input">
-                                    <label for="formEmail" class="cyber-label"><span class="label-decor">></span> EMAIL_UPLINK</label>
-                                    <div class="input-line"></div>
-                                </div>
-                                <div class="form-group">
-                                    <textarea id="formMessage" required rows="5" placeholder=" " class="cyber-input"></textarea>
-                                    <label for="formMessage" class="cyber-label"><span class="label-decor">></span> PAYLOAD_DATA_MESSAGE</label>
-                                    <div class="input-line"></div>
-                                </div>
-                                
-                                <button type="submit" class="truck-button submit-btn">
-                                    <span class="default">TRANSMIT PACKET</span>
-                                    <span class="success">
-                                        PACKET SENT
-                                        <svg viewBox="0 0 12 10">
-                                            <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
-                                        </svg>
-                                    </span>
-                                    <div class="truck">
-                                        <div class="wheel"></div>
-                                        <div class="back"></div>
-                                        <div class="front"></div>
-                                        <div class="box"></div>
-                                    </div>
-                                </button>
-                            </form>
-                            
-                        </div>
-                    </div>
-
-                    <!-- Direct Connect Column -->
-                    <div class="contact-info scroll-reveal">
-                        <h3 class="cyber-heading">DIRECT COMMUNICATION CHANNELS</h3>
-                        <p class="contact-desc">
-                            Seeking software development internship opportunities. Open a direct communication bridge below.
-                        </p>
-                        
-                        <div class="contact-methods">
-                            <a href="mailto:sohamneswankar@gmail.com" class="info-link">
-                                <div class="link-icon"><i class="fa-solid fa-envelope-open-text"></i></div>
-                                <div class="link-text">
-                                    <span class="link-lbl">EMAIL</span>
-                                    <span class="link-val">sohamneswankar@gmail.com</span>
-                                </div>
-                            </a>
-                            <div class="info-link">
-                                <div class="link-icon"><i class="fa-solid fa-compass"></i></div>
-                                <div class="link-text">
-                                    <span class="link-lbl">LOCATION</span>
-                                    <span class="link-val">Kalyan, Maharashtra</span>
-                                </div>
-                            </div>
-                            <div class="info-link">
-                                <div class="link-icon"><i class="fa-solid fa-phone"></i></div>
-                                <div class="link-text">
-                                    <span class="link-lbl">CONTACT PHONE</span>
-                                    <span class="link-val">+91 9137603372</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="social-networks">
-                            <h4 class="social-title">CONNECT CHANNELS</h4>
-                            <div class="social-links">
-                                <a href="https://github.com/SOHAM5128" target="_blank" class="social-btn" aria-label="GitHub Portal"><i class="fa-brands fa-github"></i></a>
-                                <a href="https://linkedin.com" target="_blank" class="social-btn" aria-label="LinkedIn Portal"><i class="fa-brands fa-linkedin-in"></i></a>
-                                <a href="https://leetcode.com/u/SOHAM_3116" target="_blank" class="social-btn" aria-label="LeetCode Portal"><i class="fa-solid fa-code"></i></a>
-                            </div>
-                        </div>
-                    </div>
+                    <a href="https://www.linkedin.com/in/soham-neswankar" target="_blank" class="contact-card">
+                        <i class="fab fa-linkedin"></i>
+                        <span>LinkedIn</span>
+                    </a>
+                    <a href="https://github.com/SOHAM5128" target="_blank" class="contact-card">
+                        <i class="fab fa-github"></i>
+                        <span>GitHub</span>
+                    </a>
+                    <a href="mailto:sohamneswankar@gmail.com" class="contact-card">
+                        <i class="fas fa-envelope"></i>
+                        <span>Email</span>
+                    </a>
                 </div>
             </div>
         </section>
 
-    </main>
-
-    <!-- 8. Footer -->
-    <footer class="hud-footer">
-        <div class="container footer-content">
-            <div class="footer-left">
-                <span class="footer-sys-info">SYSTEM_STATUS: <span class="active-pulse">ONLINE</span> // FPS: <span id="footerFps">60.00</span></span>
+        <footer class="footer">
+            <div class="footer-compact">
+                <div class="footer-main">
+                    <div class="footer-brand-compact">
+                        <strong>SOHAM SATYAWAN NESWANKAR</strong>
+                        <span>Computer Science Engineering Student</span>
+                    </div>
+                    <div class="footer-nav-compact">
+                        <a href="#hero">Home</a>
+                        <a href="#about">About</a>
+                        <a href="#experience">Experience</a>
+                        <a href="#skills">Skills</a>
+                    </div>
+                    <div class="footer-social-compact">
+                        <a href="https://github.com/SOHAM5128" target="_blank" title="GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/soham-neswankar" target="_blank" title="LinkedIn">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="https://leetcode.com/u/SOHAM_3116" target="_blank" title="LeetCode">
+                            <i class="fas fa-code"></i>
+                        </a>
+                        <a href="mailto:sohamneswankar@gmail.com" title="Email">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-bottom-compact">
+                    <span>© 2026 Soham Satyawan Neswankar</span>
+                    <a href="terminal.html" class="footer-terminal-link-compact">
+                        <i class="fas fa-terminal"></i> Terminal
+                    </a>
+                </div>
             </div>
-            <div class="footer-center">
-                <span>DESIGNED BY SOHAM NESWANKAR &copy; 2026 // ALL RIGHTS SECURED</span>
-            </div>
-            <div class="footer-right">
-                <a href="#hero" class="scroll-top-btn" aria-label="Return to Top"><i class="fa-solid fa-caret-up"></i> TOP</a>
-            </div>
-        </div>
-    </footer>
+        </footer>
+    </div>
+    </div>
 
-    <!-- CDN Libraries -->
-    <!-- Three.js for 3D Graphics -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- GLTF Loader for 3D models -->
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js" crossorigin="anonymous"></script>
-    <!-- MeshLine for ribbon-like lanyard -->
-    <script src="https://unpkg.com/three.meshline@1.4.0/src/THREE.MeshLine.js" crossorigin="anonymous"></script>
+    <script>
+        // Always start at top of page on reload
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+        window.scrollTo(0, 0);
 
-    <!-- GSAP for Smooth Micro-Animations -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    
-    <!-- Vanilla Tilt for Card Mechanics -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
-    
-    <!-- Interactive 3D Card Engine -->
-    <script src="avatar-3d.js"></script>
-    
-    <!-- Core JavaScript -->
-    <script src="script.js"></script>
+        // Loading Screen
+        window.addEventListener('load', () => {
+            const loader = document.querySelector('.loader-overlay');
+            setTimeout(() => {
+                loader.classList.add('hidden');
+            }, 1200); // Hide after 1.2 seconds
+        });
+
+        // Hero Photo Tilt on Scroll
+        let photoTilted = false;
+        const heroPhoto = document.querySelector('.hero-photo');
+
+        window.addEventListener('scroll', () => {
+            if (!photoTilted && window.scrollY > 5) {
+                heroPhoto.classList.add('tilted');
+                photoTilted = true;
+            }
+        });
+
+        // Hero Photo Hover - Reset to starting position
+        heroPhoto.addEventListener('mouseenter', () => {
+            heroPhoto.classList.remove('tilted');
+        });
+
+        heroPhoto.addEventListener('mouseleave', () => {
+            if (photoTilted) {
+                heroPhoto.classList.add('tilted');
+            }
+        });
+
+        // Falling SVG - Only terminal (top-right)
+        let terminalFallen = false;
+        const decoTerminal = document.querySelector('.deco-terminal');
+        const heroContent = document.querySelector('.hero-content');
+
+        function calculateFallDistance() {
+            const heroContentRect = heroContent.getBoundingClientRect();
+            const heroContentBottom = heroContentRect.bottom;
+            const terminalRect = decoTerminal.getBoundingClientRect();
+            const terminalFall = Math.max(0, heroContentBottom - terminalRect.bottom - 50);
+            decoTerminal.style.setProperty('--fall-distance', `${terminalFall}px`);
+        }
+
+        calculateFallDistance();
+        window.addEventListener('resize', calculateFallDistance);
+
+        window.addEventListener('scroll', () => {
+            if (!terminalFallen && window.scrollY > 5) {
+                decoTerminal.classList.add('falling');
+                terminalFallen = true;
+            }
+        });
+
+        // Paper Tear Gap Parallax Effect
+        const pageGap = document.querySelector('.page-gap');
+        const paperTearBottom = document.querySelector('.paper-tear-bottom');
+        const paperTearBottomBgGray = document.querySelector('.paper-tear-bottom svg path[fill="#d0d0d0"]');
+        const paperTearBottomBgWhite = document.querySelector('.paper-tear-bottom svg path[fill="#ffffff"]');
+        const tearTapeSticker = document.querySelector('.tear-tape-sticker');
+        const minGapHeight = -30;
+
+        function updateTapePosition() {
+            if (paperTearBottom && tearTapeSticker) {
+                const rect = paperTearBottom.getBoundingClientRect();
+                tearTapeSticker.style.setProperty('--tape-position', `${rect.top}px`);
+            }
+        }
+
+        function updateGapParallax() {
+            if (!pageGap || !paperTearBottom) return;
+
+            const isMobile = window.innerWidth <= 768;
+
+            // Skip animation on mobile
+            if (isMobile) return;
+
+            const scrollY = window.scrollY;
+            const initialGapHeight = 300;
+            const scrollStart = 100;
+            const scrollRange = 200;
+            const stickerDelay = 30;
+            const stickerStart = scrollStart + scrollRange + stickerDelay;
+            const stickerRange = 60;
+
+            updateTapePosition();
+
+            if (scrollY <= scrollStart) {
+                pageGap.style.setProperty('height', initialGapHeight + 'px', 'important');
+                paperTearBottom.style.setProperty('margin-top', '0px', 'important');
+                if (paperTearBottomBgGray) paperTearBottomBgGray.style.opacity = '1';
+                if (tearTapeSticker) {
+                    tearTapeSticker.style.transform = 'rotate(-8deg) translateY(-40px) translateZ(30px) rotateX(35deg)';
+                    tearTapeSticker.style.opacity = '0';
+                }
+            } else if (scrollY >= scrollStart && scrollY <= scrollStart + scrollRange) {
+                const progress = (scrollY - scrollStart) / scrollRange;
+                const currentHeight = initialGapHeight - (initialGapHeight - minGapHeight) * progress;
+
+                if (currentHeight >= 0) {
+                    pageGap.style.setProperty('height', currentHeight + 'px', 'important');
+                    paperTearBottom.style.setProperty('margin-top', '0px', 'important');
+                    if (paperTearBottomBgGray) paperTearBottomBgGray.style.opacity = '1';
+                    if (tearTapeSticker) {
+                        tearTapeSticker.style.transform = 'rotate(-8deg) translateY(-100px) translateZ(50px) rotateX(45deg)';
+                        tearTapeSticker.style.opacity = '0';
+                    }
+                } else {
+                    // Negative margin starts - fade background
+                    pageGap.style.setProperty('height', '0px', 'important');
+                    paperTearBottom.style.setProperty('margin-top', currentHeight + 'px', 'important');
+
+                    // Fade based on negative margin progress
+                    const negativePart = Math.abs(minGapHeight);
+                    const negativeProgress = Math.abs(currentHeight) / negativePart;
+                    const opacity = 1 - negativeProgress;
+
+                    if (paperTearBottomBgGray) paperTearBottomBgGray.style.opacity = opacity;
+                    if (tearTapeSticker) {
+                        tearTapeSticker.style.transform = 'rotate(-8deg) translateY(-100px) translateZ(50px) rotateX(45deg)';
+                        tearTapeSticker.style.opacity = '0';
+                    }
+                }
+            } else if (scrollY > stickerStart && scrollY < stickerStart + stickerRange) {
+                // Sticker animation in progress
+                pageGap.style.setProperty('height', '0px', 'important');
+                paperTearBottom.style.setProperty('margin-top', minGapHeight + 'px', 'important');
+                if (paperTearBottomBgGray) paperTearBottomBgGray.style.opacity = '0';
+
+                if (tearTapeSticker) {
+                    const stickerProgress = (scrollY - stickerStart) / stickerRange;
+
+                    // Interpolate transform values based on progress
+                    const translateY = -40 + (40 * stickerProgress);
+                    const translateZ = 30 - (30 * stickerProgress);
+                    const rotateX = 35 - (35 * stickerProgress);
+                    const opacityVal = Math.min(1, Math.max(0, (stickerProgress - 0.35) * 1.54));
+
+                    tearTapeSticker.style.transform = `rotate(-8deg) translateY(${translateY}px) translateZ(${translateZ}px) rotateX(${rotateX}deg)`;
+                    tearTapeSticker.style.opacity = opacityVal;
+                }
+            } else if (scrollY >= stickerStart + stickerRange) {
+                // Sticker fully stuck
+                pageGap.style.setProperty('height', '0px', 'important');
+                paperTearBottom.style.setProperty('margin-top', minGapHeight + 'px', 'important');
+                if (paperTearBottomBgGray) paperTearBottomBgGray.style.opacity = '0';
+                if (tearTapeSticker) {
+                    tearTapeSticker.style.transform = 'rotate(-8deg) translateY(0px) translateZ(0px) rotateX(0deg)';
+                    tearTapeSticker.style.opacity = '1';
+                }
+            } else {
+                // Between gap close and sticker start
+                pageGap.style.setProperty('height', '0px', 'important');
+                paperTearBottom.style.setProperty('margin-top', minGapHeight + 'px', 'important');
+                if (paperTearBottomBgGray) paperTearBottomBgGray.style.opacity = '0';
+                if (tearTapeSticker) {
+                    tearTapeSticker.style.transform = 'rotate(-8deg) translateY(-40px) translateZ(30px) rotateX(35deg)';
+                    tearTapeSticker.style.opacity = '0';
+                }
+            }
+        }
+
+        window.addEventListener('scroll', updateGapParallax);
+        window.addEventListener('resize', updateGapParallax);
+
+        // Initialize all animations with current scroll position
+        requestAnimationFrame(() => {
+            updateGapParallax();
+        });
+
+        // Highlight Parallax Effect
+        const highlights = document.querySelectorAll('.highlight');
+        const highlightData = new Map();
+
+        highlights.forEach((highlight, index) => {
+            const direction = index % 2 === 0 ? 'left' : 'right';
+            highlight.setAttribute('data-direction', direction);
+            highlightData.set(highlight, {
+                hasStarted: false,
+                startScroll: 0,
+                duration: 100,
+                direction: direction
+            });
+        });
+
+        function updateHighlights() {
+            const scrollY = window.scrollY;
+            const windowHeight = window.innerHeight;
+
+            highlights.forEach(highlight => {
+                const rect = highlight.getBoundingClientRect();
+                const elementTop = rect.top + scrollY;
+                const data = highlightData.get(highlight);
+
+                // Start highlighting when element is near top of viewport
+                const triggerPoint = scrollY + windowHeight * 0.8;
+
+                if (!data.hasStarted && triggerPoint >= elementTop) {
+                    data.hasStarted = true;
+                    data.startScroll = scrollY;
+                }
+
+                if (data.hasStarted) {
+                    const progress = Math.min(1, Math.max(0, (scrollY - data.startScroll) / data.duration));
+                    highlight.style.setProperty('--highlight-progress', `${progress * 100}%`);
+                }
+
+                // Reset when scrolling back up past element
+                if (data.hasStarted && scrollY < data.startScroll - 50) {
+                    data.hasStarted = false;
+                    highlight.style.setProperty('--highlight-progress', '0%');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateHighlights);
+        requestAnimationFrame(() => {
+            updateHighlights();
+        });
+
+        // Language Stars Animation Effect
+        const languageItems = document.querySelectorAll('.language-item');
+        const languageStarsData = new Map();
+
+        languageItems.forEach(item => {
+            const stars = item.querySelectorAll('.language-stars .star');
+            languageStarsData.set(item, {
+                hasStarted: false,
+                stars: stars
+            });
+        });
+
+        function updateLanguageStars() {
+            const scrollY = window.scrollY;
+            const windowHeight = window.innerHeight;
+
+            languageItems.forEach(item => {
+                const rect = item.getBoundingClientRect();
+                const elementTop = rect.top + scrollY;
+                const data = languageStarsData.get(item);
+
+                const triggerPoint = scrollY + windowHeight * 0.8;
+
+                if (!data.hasStarted && triggerPoint >= elementTop) {
+                    data.hasStarted = true;
+                    data.stars.forEach((star, index) => {
+                        setTimeout(() => {
+                            star.classList.add('visible');
+                        }, index * 100);
+                    });
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateLanguageStars);
+        requestAnimationFrame(() => {
+            updateLanguageStars();
+        });
+
+        // Journey Timeline Book Page Effect
+        const journeyTimeline = document.querySelector('.journey-timeline');
+        const journeyTimelineBack = document.querySelector('.journey-timeline-back');
+        const journeyTimelineData = {
+            hasStarted: false,
+            startScroll: 0,
+            pageRange: 200
+        };
+
+        function updateJourneyTimeline() {
+            if (!journeyTimeline || !journeyTimelineBack) return;
+
+            // Only run animation on desktop
+            if (window.innerWidth < 769) return;
+
+            const scrollY = window.scrollY;
+            const windowHeight = window.innerHeight;
+            const rect = journeyTimeline.getBoundingClientRect();
+            const elementTop = rect.top + scrollY;
+
+            const triggerPoint = scrollY + windowHeight * 0.5;
+
+            if (!journeyTimelineData.hasStarted && triggerPoint >= elementTop) {
+                journeyTimelineData.hasStarted = true;
+                journeyTimelineData.startScroll = scrollY;
+            }
+
+            if (journeyTimelineData.hasStarted) {
+                const progress = Math.min(1, Math.max(0, (scrollY - journeyTimelineData.startScroll) / journeyTimelineData.pageRange));
+
+                // Book left page opening - timeline rotates from back to front
+                const rotateY = 180 - (180 * progress); // 180 -> 0
+
+                // Both rotate together
+                journeyTimeline.style.transform = `rotateY(${rotateY}deg)`;
+                journeyTimelineBack.style.transform = `rotateY(${rotateY}deg)`;
+
+                // Switch z-index at 90 degrees
+                if (rotateY > 95) {
+                    // Map is visible (when book is closed)
+                    journeyTimeline.style.zIndex = '1';
+                    journeyTimelineBack.style.zIndex = '100';
+                } else {
+                    // Timeline content is visible (when book is open)
+                    journeyTimeline.style.zIndex = '100';
+                    journeyTimelineBack.style.zIndex = '1';
+                }
+
+                // Enable scrolling when fully opened
+                if (progress >= 1) {
+                    journeyTimeline.style.overflowY = 'auto';
+                } else {
+                    journeyTimeline.style.overflowY = 'hidden';
+                }
+            } else {
+                // Reset to initial state
+                journeyTimeline.style.transform = 'rotateY(180deg)';
+                journeyTimelineBack.style.transform = 'rotateY(180deg)';
+                journeyTimeline.style.zIndex = '1';
+                journeyTimelineBack.style.zIndex = '100';
+                journeyTimeline.style.overflowY = 'hidden';
+            }
+        }
+
+        window.addEventListener('scroll', updateJourneyTimeline);
+        requestAnimationFrame(() => {
+            updateJourneyTimeline();
+        });
+
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        const icon = themeToggle.querySelector('i');
+
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        body.setAttribute('data-theme', currentTheme);
+        updateIcon(currentTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const theme = body.getAttribute('data-theme');
+            const newTheme = theme === 'light' ? 'dark' : 'light';
+
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateIcon(newTheme);
+        });
+
+        function updateIcon(theme) {
+            if (theme === 'dark') {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        }
+
+        // Smooth Scroll for Navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Smart Navbar Scroll
+        const navbar = document.querySelector('.navbar');
+        let lastScroll = 0;
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+
+            // Smart hide/show navbar
+            if (currentScroll > lastScroll && currentScroll > 100) {
+                // Scrolling down & past threshold - hide navbar
+                navbar.classList.add('navbar-hidden');
+            } else if (currentScroll < lastScroll) {
+                // Scrolling up - show navbar
+                navbar.classList.remove('navbar-hidden');
+            }
+
+            // Active link highlighting
+            const sections = document.querySelectorAll('section[id]');
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+
+                if (currentScroll >= sectionTop && currentScroll < sectionTop + sectionHeight) {
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+
+            lastScroll = currentScroll;
+        });
+
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section, .timeline-item, .skill-box').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Matrix Typing Effect for Hero Greeting
+        const greetingElement = document.getElementById('hero-greeting');
+        const finalText = 'Hi there! 👋';
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+
+        function matrixTypingEffect() {
+            let iterations = 0;
+            const interval = setInterval(() => {
+                greetingElement.textContent = finalText
+                    .split('')
+                    .map((char, index) => {
+                        if (index < iterations) {
+                            return finalText[index];
+                        }
+                        if (char === ' ' || char === '👋') {
+                            return char;
+                        }
+                        return chars[Math.floor(Math.random() * chars.length)];
+                    })
+                    .join('');
+
+                if (iterations >= finalText.length) {
+                    clearInterval(interval);
+                }
+
+                iterations += 1/3;
+            }, 50);
+        }
+
+        // Start the effect after a short delay
+        setTimeout(matrixTypingEffect, 500);
+
+        // Journey Map with Leaflet
+        const initialView = { center: [20.8, 73.0], zoom: 6 };
+
+        const map = L.map('journey-map', {
+            center: initialView.center,
+            zoom: initialView.zoom,
+            scrollWheelZoom: false,
+            zoomControl: true
+        });
+
+        L.tileLayer('https://watercolormaps.collection.cooperhewitt.org/tile/watercolor/{z}/{x}/{y}.jpg', {
+            attribution: '© Stamen Design, © OpenStreetMap contributors',
+            maxZoom: 16
+        }).addTo(map);
+
+        // Add custom home button control
+        L.Control.Home = L.Control.extend({
+            onAdd: function(map) {
+                const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-home');
+                const link = L.DomUtil.create('a', '', container);
+                link.href = '#';
+                link.title = 'Reset map view';
+                link.innerHTML = '<i class="fas fa-home"></i>';
+
+                L.DomEvent.on(link, 'click', function(e) {
+                    e.preventDefault();
+                    map.setView(initialView.center, initialView.zoom);
+                });
+
+                return container;
+            }
+        });
+
+        new L.Control.Home({ position: 'topright' }).addTo(map);
+
+        // Group locations by city/label
+        const locations = [
+            {
+                coords: [22.3072, 73.1812],
+                label: 'Vadodara',
+                companies: [
+                    {
+                        city: 'Vadodara, Gujarat',
+                        company: 'Parul University',
+                        period: '2023 - 2027',
+                        role: 'B.Tech - Computer Science Engineering'
+                    },
+                    {
+                        city: 'Vadodara, Gujarat',
+                        company: 'Dhoom (Cultural Event)',
+                        period: '2024',
+                        role: 'Event Coordinator'
+                    },
+                    {
+                        city: 'Vadodara, Gujarat',
+                        company: 'Hackathon 2025',
+                        period: '2025',
+                        role: 'Developed Tech Solution'
+                    }
+                ]
+            },
+            {
+                coords: [19.2403, 73.1305],
+                label: 'Kalyan',
+                companies: [
+                    {
+                        city: 'Kalyan, Maharashtra',
+                        company: "St. Jude's High School",
+                        period: 'Class of 2021',
+                        role: 'Secondary School Certificate (SSC)'
+                    }
+                ]
+            },
+            {
+                coords: [19.2183, 72.9781],
+                label: 'Thane',
+                companies: [
+                    {
+                        city: 'Thane, Maharashtra',
+                        company: 'R. K. Talreja College',
+                        period: '2021 - 2023',
+                        role: 'Higher Secondary Certificate (HSC)'
+                    }
+                ]
+            }
+        ];
+
+        // Store markers by city/label
+        const markers = {};
+
+        // Add custom neo-brutalist markers
+        locations.forEach(location => {
+            const isCurrent = location.label === 'Vadodara';
+            const markerIcon = L.divIcon({
+                className: isCurrent ? 'neo-marker neo-marker-current' : 'neo-marker',
+                html: `
+                    <div class="neo-marker-label ${isCurrent ? 'neo-marker-label-current' : ''}">${location.label}</div>
+                    <div class="neo-marker-pin ${isCurrent ? 'neo-marker-pin-current' : ''}"></div>
+                `,
+                iconSize: isCurrent ? [35, 35] : [30, 30],
+                iconAnchor: isCurrent ? [17.5, 50] : [15, 45],
+                popupAnchor: [0, isCurrent ? -50 : -45]
+            });
+
+            // Build popup content
+            let popupContent = `<div class="map-popup">`;
+            popupContent += `<div class="map-popup-country">${location.label}</div>`;
+
+            location.companies.forEach((company, index) => {
+                if (index > 0) popupContent += `<div class="map-popup-divider"></div>`;
+                popupContent += `
+                    <div class="map-popup-company">
+                        <strong>${company.company}</strong>
+                        <span>${company.role}</span>
+                        <small>${company.city}</small>
+                        <small>${company.period}</small>
+                    </div>
+                `;
+            });
+
+            popupContent += `</div>`;
+
+            const marker = L.marker(location.coords, { icon: markerIcon }).addTo(map);
+            marker.bindPopup(popupContent);
+
+            // Store marker by label
+            markers[location.label] = marker;
+        });
+
+        // Add click handlers to timeline items
+        document.querySelectorAll('.timeline-item-flat').forEach(item => {
+            item.addEventListener('click', () => {
+                const loc = item.getAttribute('data-location');
+                const marker = markers[loc];
+                if (marker) {
+                    map.setView(marker.getLatLng(), 8, {
+                        animate: true,
+                        duration: 1
+                    });
+                    setTimeout(() => {
+                        marker.openPopup();
+                    }, 500);
+                }
+            });
+        });
+
+        // Progress Bar Functionality
+        const progressBarFill = document.querySelector('.progress-bar-fill');
+        const checkpoints = document.querySelectorAll('.checkpoint');
+
+        function updateProgressBar() {
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight - windowHeight;
+            const scrolled = window.scrollY;
+            const progress = (scrolled / documentHeight) * 100;
+
+            progressBarFill.style.width = progress + '%';
+
+            // Update active checkpoint based on scroll position
+            const sections = ['hero', 'about', 'experience', 'skills', 'contact'];
+            let activeIndex = 0;
+
+            sections.forEach((sectionId, index) => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    const rect = section.getBoundingClientRect();
+                    if (rect.top <= windowHeight / 2 && rect.bottom >= windowHeight / 2) {
+                        activeIndex = index;
+                    }
+                }
+            });
+
+            checkpoints.forEach((checkpoint, index) => {
+                if (index <= activeIndex) {
+                    checkpoint.classList.add('active');
+                } else {
+                    checkpoint.classList.remove('active');
+                }
+            });
+        }
+
+        // Checkpoint click handlers
+        checkpoints.forEach(checkpoint => {
+            checkpoint.addEventListener('click', () => {
+                const sectionId = checkpoint.getAttribute('data-section');
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        window.addEventListener('scroll', updateProgressBar);
+        window.addEventListener('resize', updateProgressBar);
+        updateProgressBar();
+
+    </script>
 </body>
 </html>

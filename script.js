@@ -1,732 +1,1942 @@
-/* ==========================================================================
-   FUTURISTIC 3D PORTFOLIO LOGIC ENGINE // SCRIPT.JS
-   ========================================================================== */
+class TerminalResume {
+  constructor() {
+    this.output = document.getElementById("output");
+    this.input = document.getElementById("command-input");
+    this.terminal = document.querySelector(".terminal");
+    this.terminalContainer = document.querySelector(".terminal-container");
+    this.contextMenu = document.querySelector(".context-menu");
+    this.terminals = [{ input: this.input, history: [], historyIndex: -1 }];
+    this.activeTerminal = 0;
+    this.activeTerminalContent = null;
+    this.resizing = null;
 
-// ==========================================================================
-// WEB3FORMS CONFIGURATION
-// ==========================================================================
-const WEB3FORMS_ACCESS_KEY = '68f0e9e9-74f4-4550-8e85-4db300d53ac9';
+    // New properties for themes and game
+    this.currentTheme = localStorage.getItem("theme") || "default";
+    this.projects = [];
+    this.skills = {};
+    this.fileSystem = {};
+    this.gameActive = false;
+    this.gameHandler = null;
 
-document.addEventListener('DOMContentLoaded', () => {
-    
-    // Initialize Web3Forms Check
-    if (WEB3FORMS_ACCESS_KEY) {
-        SystemLog("> WEB3FORMS: ACCESS KEY CONFIGURED", "success");
-    } else {
-        SystemLog("> WEB3FORMS: ACCESS KEY MISSING", "warning");
+    // Initialize modals
+    this.themeModal = document.getElementById("theme-modal");
+    this.projectsModal = document.getElementById("projects-modal");
+    this.skillsModal = document.getElementById("skills-modal");
+
+    // Initialize theme selector
+    this.themeToggle = document.getElementById("theme-toggle");
+
+    this.setupEventListeners();
+    this.loadProjects();
+    this.loadSkills();
+    this.setupFileSystem();
+    this.init();
+  }
+
+  init() {
+    // Apply saved theme
+    this.handleThemeChange(this.currentTheme);
+
+    // Set up modal close buttons
+    document.querySelectorAll(".close-button").forEach((button) => {
+      button.addEventListener("click", () => {
+        this.closeModal(button.closest(".modal"));
+      });
+    });
+
+    // Theme toggle
+    this.themeToggle.addEventListener("click", () => {
+      this.showModal(this.themeModal);
+    });
+
+    // Hide language toggle since we're removing that feature
+    const languageToggle = document.getElementById("language-toggle");
+    if (languageToggle && languageToggle.parentElement) {
+      languageToggle.parentElement.style.display = "none";
     }
-    
-    // ==========================================================================
-    // 1. TERMINAL PRELOADER SEQUENCER
-    // ==========================================================================
-    const preloader = document.getElementById('preloader');
-    const loaderLogs = document.getElementById('loaderLogs');
-    const loaderBar = document.getElementById('loaderBar');
-    const loaderPercent = document.getElementById('loaderPercent');
 
-    const systemLogs = [
-        { text: "> INITIALIZING RUNTIME PLATFORM...", delay: 200, type: 'info' },
-        { text: "> RESOLVING STYLING SYSTEM MODULES... DONE", delay: 150, type: 'success' },
-        { text: "> COMPILING 3D GLSL CORE SHADERS... SUCCESS", delay: 250, type: 'success' },
-        { text: "> RENDERING INTERACTIVE WEBGL GEOMETRIC ELEMENTS...", delay: 200, type: 'info' },
-        { text: "> ALLOCATING AMBIENT AUDIO CHANNELS... SUCCESS", delay: 300, type: 'success' },
-        { text: "> ESTABLISHING GRAPHICS HARDWARE HANDSHAKE... ACTIVE", delay: 200, type: 'success' },
-        { text: "> BINDING GSAP INTERACTION TIMELINES... SUCCESS", delay: 300, type: 'success' },
-        { text: "> LOADING INTERACTIVE PORTS... OK", delay: 200, type: 'success' },
-        { text: "> PLATFORM READY // RESOLVING 60 FPS INTERACTIVE VIEWPORT", delay: 100, type: 'success' }
+    // Theme selection
+    document.querySelectorAll(".theme-option").forEach((option) => {
+      option.addEventListener("click", () => {
+        this.handleThemeChange(option.dataset.theme);
+      });
+    });
+
+    this.printWelcomeMessage();
+    this.input.focus();
+    this.setupContextMenu();
+  }
+
+  setupContextMenu() {
+    // Handle right-click on terminal content
+    this.terminalContainer.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      const terminalContent = e.target.closest(".terminal-content");
+      if (terminalContent) {
+        this.activeTerminalContent = terminalContent;
+        this.showContextMenu(e.clientX, e.clientY);
+      }
+    });
+
+    // Hide context menu on click outside
+    document.addEventListener("click", () => {
+      this.contextMenu.classList.remove("active");
+    });
+
+    // Handle menu item clicks
+    this.contextMenu.addEventListener("click", (e) => {
+      const action = e.target.dataset.action;
+      if (action) {
+        this.handleContextMenuAction(action);
+      }
+    });
+  }
+
+  showContextMenu(x, y) {
+    this.contextMenu.style.left = `${x}px`;
+    this.contextMenu.style.top = `${y}px`;
+    this.contextMenu.classList.add("active");
+
+    // Show/hide close option based on whether this terminal can be closed
+    const closeOption = this.contextMenu.querySelector(
+      '[data-action="close-split"]'
+    );
+    const isMainTerminal =
+      this.activeTerminalContent === this.terminalContainer.firstElementChild;
+    closeOption.style.display = isMainTerminal ? "none" : "block";
+  }
+
+  handleContextMenuAction(action) {
+    if (!this.activeTerminalContent) return;
+
+    switch (action) {
+      case "split-h":
+        this.splitTerminal("horizontal", this.activeTerminalContent);
+        break;
+      case "split-v":
+        this.splitTerminal("vertical", this.activeTerminalContent);
+        break;
+      case "close-split":
+        this.closeSplit(this.activeTerminalContent);
+        break;
+    }
+    this.contextMenu.classList.remove("active");
+  }
+
+  setupEventListeners() {
+    // Global click handler for terminal focus
+    this.terminalContainer.addEventListener("click", (e) => {
+      const terminalContent = e.target.closest(".terminal-content");
+      if (terminalContent) {
+        const input = terminalContent.querySelector("input");
+        if (input) {
+          input.focus();
+          this.activeTerminal = this.terminals.findIndex(
+            (t) => t.input === input
+          );
+        }
+      }
+    });
+
+    // Global keyboard shortcuts
+    document.addEventListener("keydown", (e) => {
+      // Ctrl + Shift + H for horizontal split
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "h") {
+        e.preventDefault();
+        const activeContent =
+          this.terminals[this.activeTerminal].input.closest(
+            ".terminal-content"
+          );
+        if (activeContent) {
+          this.splitTerminal("horizontal", activeContent);
+        }
+      }
+      // Ctrl + Shift + V for vertical split
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "v") {
+        e.preventDefault();
+        const activeContent =
+          this.terminals[this.activeTerminal].input.closest(
+            ".terminal-content"
+          );
+        if (activeContent) {
+          this.splitTerminal("vertical", activeContent);
+        }
+      }
+    });
+
+    // Setup initial input handlers
+    this.setupInputHandlers(this.input);
+  }
+
+  setupInputHandlers(inputElement) {
+    inputElement.addEventListener("keydown", (e) => {
+      const terminal = this.terminals.find((t) => t.input === inputElement);
+      if (!terminal) return;
+
+      if (e.key === "Enter") {
+        this.handleCommand(inputElement);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        this.navigateHistory("up", terminal);
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        this.navigateHistory("down", terminal);
+      } else if (e.key === "l" && e.ctrlKey) {
+        // Handle Ctrl+L (clear screen)
+        e.preventDefault();
+        const outputElement = inputElement
+          .closest(".terminal-content")
+          .querySelector("[id^='output']");
+        outputElement.innerHTML = "";
+        this.printWelcomeMessage(outputElement);
+      } else if (e.key === "Tab") {
+        // Handle Tab completion
+        e.preventDefault();
+        this.handleTabCompletion(inputElement);
+      }
+    });
+  }
+
+  handleTabCompletion(inputElement) {
+    const currentInput = inputElement.value.toLowerCase().trim();
+    const commands = [
+      "help",
+      "about",
+      "skills",
+      "experience",
+      "education",
+      "contact",
+      "clear",
+      "projects",
+      "skills-visual",
+      "game",
+      "exit-game",
+      "matrix",
+      "stop-matrix",
+      "weather",
+      "calc",
+      "calculate",
+      "pdf",
     ];
 
-    let currentLogIndex = 0;
-    let progressVal = 0;
+    // Find matching commands
+    const matches = commands.filter((cmd) => cmd.startsWith(currentInput));
 
-    function runPreloader() {
-        if (currentLogIndex < systemLogs.length) {
-            const logItem = systemLogs[currentLogIndex];
-            
-            // Create and append log line
-            const logLine = document.createElement('p');
-            logLine.className = `log-line ${logItem.type}`;
-            logLine.innerText = logItem.text;
-            loaderLogs.appendChild(logLine);
-            loaderLogs.scrollTop = loaderLogs.scrollHeight; // Auto-scroll
+    if (matches.length === 1) {
+      // Single match - complete the command
+      inputElement.value = matches[0];
+    } else if (matches.length > 1 && currentInput) {
+      // Multiple matches - show possibilities
+      const outputElement = inputElement
+        .closest(".terminal-content")
+        .querySelector("[id^='output']");
 
-            // Progress bar mapping
-            currentLogIndex++;
-            progressVal = Math.floor((currentLogIndex / systemLogs.length) * 100);
-            
-            // Set style and percentages
-            loaderBar.style.width = `${progressVal}%`;
-            loaderPercent.innerText = `${progressVal}%`;
+      const matchesText = `\nPossible commands:\n${matches.join("  ")}`;
+      this.printToOutput(outputElement, matchesText, "info");
+    }
+  }
 
-            setTimeout(runPreloader, logItem.delay);
-        } else {
-            // Loader completed, trigger page reveal
-            setTimeout(revealPage, 600);
-        }
+  navigateHistory(direction, terminal) {
+    if (
+      direction === "up" &&
+      terminal.historyIndex < terminal.history.length - 1
+    ) {
+      terminal.historyIndex++;
+    } else if (direction === "down" && terminal.historyIndex > -1) {
+      terminal.historyIndex--;
     }
 
-    function revealPage() {
-        gsap.to(preloader, {
-            opacity: 0,
-            duration: 1,
-            ease: "power3.inOut",
-            onComplete: () => {
-                preloader.style.display = 'none';
-                triggerPageRevealAnimations();
-            }
-        });
+    if (
+      terminal.historyIndex >= 0 &&
+      terminal.historyIndex < terminal.history.length
+    ) {
+      terminal.input.value =
+        terminal.history[terminal.history.length - 1 - terminal.historyIndex];
+    } else {
+      terminal.input.value = "";
+    }
+  }
+
+  splitTerminal(direction, sourceTerminal) {
+    const parentContainer = sourceTerminal.parentElement;
+    const isAlreadySplit = parentContainer.children.length > 1;
+    const splitClass = direction === "horizontal" ? "split-h" : "split-v";
+
+    // If parent is not split or split in different direction, create new container
+    if (!isAlreadySplit || !parentContainer.classList.contains(splitClass)) {
+      const newContainer = document.createElement("div");
+      newContainer.className = `terminal-container ${splitClass}`;
+
+      // Move source terminal to new container
+      sourceTerminal.parentElement.insertBefore(newContainer, sourceTerminal);
+      newContainer.appendChild(sourceTerminal);
+
+      // Create new terminal in the container
+      this.createNewTerminalContent(newContainer);
+    } else {
+      // Add new terminal to existing split container
+      this.createNewTerminalContent(parentContainer);
+    }
+  }
+
+  createNewTerminalContent(container) {
+    const newContent = document.createElement("div");
+    newContent.className = "terminal-content";
+    const timestamp = Date.now();
+    newContent.innerHTML = `
+      <div id="output-${timestamp}" class="terminal-output"></div>
+      <div class="input-line">
+        <span class="prompt">➜</span>
+        <input type="text" id="command-input-${timestamp}" class="command-input" />
+      </div>
+    `;
+
+    // Add resize handle if not the last element
+    if (container.children.length > 0) {
+      const handle = document.createElement("div");
+      handle.className = `resize-handle ${
+        container.classList.contains("split-h") ? "horizontal" : "vertical"
+      }`;
+      container.lastElementChild.appendChild(handle);
+      this.setupResizeHandle(handle);
     }
 
-    // Start boot sequence
-    runPreloader();
+    container.appendChild(newContent);
 
-    // GSAP page reveal micro-animations
-    function triggerPageRevealAnimations() {
-        gsap.from('.hud-header', { y: -50, opacity: 0, duration: 1, ease: 'power3.out' });
-        gsap.from('.cyber-badge-wrapper', { scale: 0.8, opacity: 0, duration: 0.8, delay: 0.2, ease: 'back.out(1.7)' });
-        gsap.from('.hero-title', { y: 30, opacity: 0, duration: 1, delay: 0.4, ease: 'power3.out' });
-        gsap.from('.hero-subtitle-static', { y: 20, opacity: 0, duration: 1, delay: 0.6, ease: 'power3.out' });
-        gsap.from('.hero-desc', { y: 20, opacity: 0, duration: 1, delay: 0.8, ease: 'power3.out' });
-        gsap.from('.hero-ctas', { y: 20, opacity: 0, duration: 1, delay: 1, ease: 'power3.out' });
-        gsap.from('.hero-avatar-wrapper', { scale: 0.9, opacity: 0, duration: 1.2, delay: 0.8, ease: 'power3.out' });
-        gsap.from('.scroll-down-hud', { opacity: 0, y: -10, duration: 1, delay: 1.2, repeat: -1, yoyo: true });
-        
-        // Coordinates HUD display
-        gsap.from('.hud-widget', { opacity: 0, duration: 1, delay: 0.8, stagger: 0.2 });
+    // Setup new input
+    const newInput = newContent.querySelector(".command-input");
+    this.setupInputHandlers(newInput);
 
-        // Start keyboard typing engine
-        initTypingEngine();
-    }
-
-    // ==========================================================================
-    // 2. AUDIO ENGINE MODULE REMOVED
-    // ==========================================================================
-
-    // ==========================================================================
-    // 3. PERFORMANCE TELEMETRY TRACKING (FPS INDICATION)
-    // ==========================================================================
-    let lastTime = performance.now();
-    let frameCount = 0;
-    const fpsIndicator = document.getElementById('footerFps');
-
-    function calculateFps() {
-        requestAnimationFrame(calculateFps);
-        frameCount++;
-        const currTime = performance.now();
-        if (currTime >= lastTime + 1000) {
-            const calculatedFps = (frameCount * 1000) / (currTime - lastTime);
-            if (fpsIndicator) {
-                fpsIndicator.innerText = calculatedFps.toFixed(2);
-            }
-            frameCount = 0;
-            lastTime = currTime;
-        }
-    }
-    calculateFps();
-
-    // ==========================================================================
-    // 3.5 FUTURISTIC DARK/LIGHT THEME SHIFT
-    // ==========================================================================
-    const themeToggle = document.getElementById('theme-toggle');
-    const themeIcon = themeToggle.querySelector('i');
-    
-    // Load cached theme protocol from local memory
-    const activeTheme = localStorage.getItem('theme-protocol') || 'dark';
-    if (activeTheme === 'light') {
-        document.body.classList.add('light-theme');
-        themeIcon.className = 'fa-solid fa-sun';
-    }
-    
-    themeToggle.addEventListener('click', () => {
-        const isLight = document.body.classList.toggle('light-theme');
-        
-        if (isLight) {
-            themeIcon.className = 'fa-solid fa-sun';
-            localStorage.setItem('theme-protocol', 'light');
-            SystemLog("> ACTIVE_PROTOCOL: LIGHT_THEME // CORES STABILIZED", "success");
-        } else {
-            themeIcon.className = 'fa-solid fa-moon';
-            localStorage.setItem('theme-protocol', 'dark');
-            SystemLog("> ACTIVE_PROTOCOL: DARK_THEME // VOID CORE ENGAGED", "info");
-        }
+    // Add to terminals array
+    this.terminals.push({
+      input: newInput,
+      history: [],
+      historyIndex: -1,
     });
 
-    function SystemLog(text, type) {
-        console.log(`[SYSTEM] ${text}`);
-    }
+    // Print welcome message in new terminal
+    const newOutput = newContent.querySelector(`#output-${timestamp}`);
+    this.printWelcomeMessage(newOutput);
 
-    // ==========================================================================
-    // 4. CUSTOM CURSOR physics removed (restored native system cursors)
-    // ==========================================================================
+    // Focus new terminal
+    newInput.focus();
+    this.activeTerminal = this.terminals.length - 1;
+  }
 
-    // ==========================================================================
-    // 5. GSAP KEYBOARD TYPING ENGINE
-    // ==========================================================================
-    const typingSpan = document.getElementById('typing-text');
-    const roles = ["CREATIVE 3D ENGINEER", "FULL-STACK DEVELOPER", "UI/UX INNOVATOR", "SHADERS MASTER"];
-    
-    let roleIndex = 0;
-    let charIndex = 0;
-    let isDeleting = false;
-    let typingSpeed = 100;
+  setupResizeHandle(handle) {
+    const isHorizontal = handle.classList.contains("horizontal");
 
-    function initTypingEngine() {
-        if (!typingSpan) return;
-        const currentRole = roles[roleIndex];
-        
-        if (isDeleting) {
-            // Deleting char
-            typingSpan.innerText = currentRole.substring(0, charIndex - 1);
-            charIndex--;
-            typingSpeed = 50; // Deletes faster
-        } else {
-            // Typing char
-            typingSpan.innerText = currentRole.substring(0, charIndex + 1);
-            charIndex++;
-            typingSpeed = 100;
-        }
+    const startResize = (e) => {
+      e.preventDefault();
+      this.resizing = {
+        handle,
+        startX: e.clientX,
+        startY: e.clientY,
+        parentContainer: handle.closest(".terminal-container"),
+        element: handle.parentElement,
+        initialSize: isHorizontal
+          ? handle.parentElement.offsetWidth
+          : handle.parentElement.offsetHeight,
+      };
 
-        if (!isDeleting && charIndex === currentRole.length) {
-            // Full role typed. Hold, then delete.
-            isDeleting = true;
-            typingSpeed = 2200; // Hold delay
-        } else if (isDeleting && charIndex === 0) {
-            // Role completely cleared. Cycle next.
-            isDeleting = false;
-            roleIndex = (roleIndex + 1) % roles.length;
-            typingSpeed = 500; // Delay before typing next role
-        }
-
-        setTimeout(initTypingEngine, typingSpeed);
-    }
-
-    // ==========================================================================
-    // 6. GSAP SCROLL & SKILLS INTERACTION
-    // ==========================================================================
-    gsap.registerPlugin(ScrollTrigger);
-
-    // Scroll Progress bar percentage logic
-    window.addEventListener('scroll', () => {
-        const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-        document.getElementById('progressBar').style.width = `${scrollPercent}%`;
-    });
-
-    // Generic scroll reveals for high visual fidelity
-    const reveals = document.querySelectorAll('.scroll-reveal');
-    reveals.forEach((element) => {
-        gsap.from(element, {
-            scrollTrigger: {
-                trigger: element,
-                start: "top 85%",
-                toggleActions: "play none none none"
-            },
-            y: 40,
-            opacity: 0,
-            duration: 0.8,
-            ease: "power2.out"
-        });
-    });
-
-    // Dynamic Skill linear progress bar loaders
-    const barFills = document.querySelectorAll('.bar-fill');
-    
-    barFills.forEach(bar => {
-        const targetWidth = bar.getAttribute('data-width');
-        
-        gsap.to(bar, {
-            scrollTrigger: {
-                trigger: bar,
-                start: "top 95%",
-            },
-            width: targetWidth,
-            duration: 1.8,
-            ease: "power3.out"
-        });
-    });
-
-    // Experience Timeline Circuit drawer
-    gsap.to('.timeline-line-glow', {
-        scrollTrigger: {
-            trigger: '.timeline-container',
-            start: "top 40%",
-            end: "bottom 60%",
-            scrub: true,
-        },
-        height: "100%",
-        ease: "none"
-    });
-
-    // Toggle active timeline items when centered in scroll window
-    const timelineItems = document.querySelectorAll('.timeline-item');
-    timelineItems.forEach(item => {
-        ScrollTrigger.create({
-            trigger: item,
-            start: "top 60%",
-            end: "bottom 40%",
-            onEnter: () => item.classList.add('active'),
-            onLeaveBack: () => item.classList.remove('active'),
-            onEnterBack: () => item.classList.add('active'),
-            onLeave: () => item.classList.remove('active')
-        });
-    });
-
-    // ==========================================================================
-    // 6.5 DYNAMIC PROJECT FILTERING SYSTEM
-    // ==========================================================================
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    const projectCards = document.querySelectorAll('.project-card');
-
-    filterButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            // Remove active status on filter buttons
-            filterButtons.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            const filter = btn.getAttribute('data-filter');
-
-            projectCards.forEach(card => {
-                const categories = card.getAttribute('data-category').split(' ');
-
-                if (filter === 'all' || categories.includes(filter)) {
-                    // Reveal matching cards with high-fidelity scale & fade animation
-                    card.classList.remove('hide');
-                    gsap.fromTo(card, 
-                        { opacity: 0, scale: 0.94, y: 15 }, 
-                        { opacity: 1, scale: 1, y: 0, duration: 0.5, ease: "power2.out" }
-                    );
-                } else {
-                    // Hide non-matching cards with scale & fade transition
-                    gsap.to(card, {
-                        opacity: 0,
-                        scale: 0.96,
-                        y: -10,
-                        duration: 0.35,
-                        ease: "power2.in",
-                        onComplete: () => {
-                            card.classList.add('hide');
-                        }
-                    });
-                }
-            });
-            
-            // Re-bind Vanilla Tilt dynamics to visible items
-            setTimeout(() => {
-                if (window.VanillaTilt) {
-                    const visibleCards = document.querySelectorAll('.project-card:not(.hide)');
-                    visibleCards.forEach(card => {
-                        if (card.vanillaTilt) card.vanillaTilt.destroy();
-                        window.VanillaTilt.init(card, {
-                            max: 10,
-                            speed: 400,
-                            glare: true,
-                            "max-glare": 0.15
-                        });
-                    });
-                }
-            }, 600);
-        });
-    });
-
-    // ==========================================================================
-    // 6.6 GLITCHY DECRYPTION COUNTER
-    // ==========================================================================
-    const statVals = document.querySelectorAll('.stat-val');
-    
-    statVals.forEach(stat => {
-        const target = parseInt(stat.getAttribute('data-target'), 10);
-        const suffix = stat.getAttribute('data-suffix') || '';
-        
-        let hasRun = false;
-        
-        ScrollTrigger.create({
-            trigger: stat,
-            start: "top 90%",
-            onEnter: () => {
-                if (hasRun) return;
-                hasRun = true;
-                
-                let current = 0;
-                const duration = 1800; // 1.8 seconds
-                const intervalTime = 30; // 30ms step
-                const totalSteps = duration / intervalTime;
-                const stepVal = target / totalSteps;
-                
-                const randomChars = "01$#@!%&?*XYZ";
-                
-                const timer = setInterval(() => {
-                    current += stepVal;
-                    if (current >= target) {
-                        clearInterval(timer);
-                        stat.innerText = `${target}${suffix}`;
-                    } else {
-                        // Generate dynamic cyber decryption frame
-                        const glitchChar = randomChars[Math.floor(Math.random() * randomChars.length)];
-                        stat.innerText = `${Math.floor(current)}${glitchChar}`;
-                    }
-                }, intervalTime);
-            }
-        });
-    });
-
-    // ==========================================================================
-    // 6.7 SCROLL-SPY ACTIVE NAVIGATION TRACKER
-    // ==========================================================================
-    const spySections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.nav-link');
-    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
-
-    const observerOptions = {
-        root: null,
-        rootMargin: "-25% 0px -25% 0px", // Trigger when section occupies center 50% viewport
-        threshold: 0.1
+      document.addEventListener("mousemove", resize);
+      document.addEventListener("mouseup", stopResize);
     };
 
-    const spyObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const id = entry.target.getAttribute('id');
-                
-                // Update header active links
-                navLinks.forEach(link => {
-                    const href = link.getAttribute('href');
-                    if (href === `#${id}`) {
-                        link.classList.add('active');
-                    } else {
-                        link.classList.remove('active');
-                    }
-                });
+    const resize = (e) => {
+      if (!this.resizing) return;
 
-                // Update mobile active links
-                mobileNavLinks.forEach(link => {
-                    const href = link.getAttribute('href');
-                    if (href === `#${id}`) {
-                        link.classList.add('active');
-                    } else {
-                        link.classList.remove('active');
-                    }
-                });
-            }
-        });
-    }, observerOptions);
+      const { parentContainer, element, startX, startY, initialSize } =
+        this.resizing;
+      const containerRect = parentContainer.getBoundingClientRect();
 
-    spySections.forEach(section => spyObserver.observe(section));
+      if (isHorizontal) {
+        const deltaX = e.clientX - startX;
+        const newWidth = initialSize + deltaX;
+        const maxWidth = containerRect.width - 150; // Leave space for other splits
 
-    // ==========================================================================
-    // 7. RESPONSIVE MOBILE NAVIGATION MENU
-    // ==========================================================================
-    const menuToggle = document.querySelector('.mobile-menu-toggle');
-    const mobileOverlay = document.querySelector('.mobile-nav-overlay');
-    const mobileLinks = document.querySelectorAll('.mobile-nav-link');
+        if (newWidth >= 150 && newWidth <= maxWidth) {
+          const percentage = (newWidth / containerRect.width) * 100;
+          element.style.flex = "none";
+          element.style.width = `${percentage}%`;
+        }
+      } else {
+        const deltaY = e.clientY - startY;
+        const newHeight = initialSize + deltaY;
+        const maxHeight = containerRect.height - 100;
 
-    function toggleMobileMenu() {
-        menuToggle.classList.toggle('open');
-        mobileOverlay.classList.toggle('open');
-        document.body.classList.toggle('no-scroll');
+        if (newHeight >= 100 && newHeight <= maxHeight) {
+          const percentage = (newHeight / containerRect.height) * 100;
+          element.style.flex = "none";
+          element.style.height = `${percentage}%`;
+        }
+      }
+    };
+
+    const stopResize = () => {
+      this.resizing = null;
+      document.removeEventListener("mousemove", resize);
+      document.removeEventListener("mouseup", stopResize);
+    };
+
+    handle.addEventListener("mousedown", startResize);
+  }
+
+  printToOutput(outputElement, text, className = "", useTypewriter = false) {
+    if (!text) {
+      outputElement.innerHTML = "";
+      return Promise.resolve();
     }
 
-    menuToggle.addEventListener('click', toggleMobileMenu);
+    const line = document.createElement("div");
+    line.className = className;
 
-    mobileLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            if (mobileOverlay.classList.contains('open')) {
-                toggleMobileMenu();
-            }
+    // Ensure consistent text formatting
+    line.style.whiteSpace = "pre-wrap";
+    line.style.marginBottom = "0.5rem";
+
+    outputElement.appendChild(line);
+
+    // Force scroll to bottom
+    this.scrollToBottom(outputElement.closest(".terminal-content"));
+
+    if (useTypewriter && !text.includes("<")) {
+      // For plain text, use typewriter effect
+      return this.typeText(line, text, 20);
+    } else if (useTypewriter && text.includes("<")) {
+      // For HTML content, use HTML typewriter
+      return this.typeHTML(line, text, 20);
+    } else {
+      // No typewriter effect
+      line.textContent = text;
+      return Promise.resolve();
+    }
+  }
+
+  scrollToBottom(terminalContent) {
+    if (!terminalContent) return;
+
+    // Only scroll if content is actually overflowing
+    if (terminalContent.scrollHeight > terminalContent.clientHeight) {
+      const currentScrollTop = terminalContent.scrollTop;
+      const maxScroll =
+        terminalContent.scrollHeight - terminalContent.clientHeight;
+
+      // If we're not already at the bottom, scroll
+      if (currentScrollTop < maxScroll) {
+        terminalContent.scrollTop = maxScroll;
+
+        // Use requestAnimationFrame to ensure scroll happens after render
+        requestAnimationFrame(() => {
+          terminalContent.scrollTop = maxScroll;
         });
-    });
+      }
+    }
+  }
 
-    // Close menu if resized back to wide screen
-    window.addEventListener('resize', () => {
-        if (window.innerWidth > 768 && mobileOverlay.classList.contains('open')) {
-            toggleMobileMenu();
-        }
-    });
+  handleCommand(inputElement) {
+    const terminal = this.terminals.find((t) => t.input === inputElement);
+    if (!terminal) return;
 
-    // ==========================================================================
-    // 8. INTERACTIVE CONTACT FORM HANDSHAKE
-    // ==========================================================================
-    const contactForm = document.getElementById('contactForm');
-    const formFeedback = document.getElementById('formFeedback');
-    const feedbackClose = document.querySelector('.feedback-close');
+    const command = inputElement.value.trim().toLowerCase();
+    const outputElement = inputElement
+      .closest(".terminal-content")
+      .querySelector("[id^='output']");
 
-    contactForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        const button = contactForm.querySelector('.truck-button');
-        if (!button || button.classList.contains('animation')) return;
-        
-        const nameVal = document.getElementById('formName').value;
-        const emailVal = document.getElementById('formEmail').value;
-        const messageVal = document.getElementById('formMessage').value;
+    this.printToOutput(outputElement, `➜ ${command}`, "command");
+    terminal.history.push(command);
+    terminal.historyIndex = -1;
+    inputElement.value = "";
 
-        // Trigger Web3Forms Email Sending
-        if (WEB3FORMS_ACCESS_KEY) {
-            SystemLog("> WEB3FORMS: TRANSMITTING PACKET...", "info");
-            
-            fetch('https://api.web3forms.com/submit', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({
-                    access_key: WEB3FORMS_ACCESS_KEY,
-                    name: nameVal,
-                    email: emailVal,
-                    message: messageVal
-                })
-            })
-            .then(async (response) => {
-                const data = await response.json();
-                if (response.ok) {
-                    SystemLog("> WEB3FORMS: PACKET TRANSMITTED SUCCESSFULLY", "success");
-                } else {
-                    SystemLog(`> WEB3FORMS: TRANSMISSION FAILED (${data.message})`, "error");
-                }
-            })
-            .catch((error) => {
-                SystemLog(`> WEB3FORMS: TRANSMISSION FAILED (${error})`, "error");
-            });
+    // Parse command and arguments
+    const [cmd, ...args] = command.split(" ");
+
+    // Execute command
+    switch (cmd) {
+      case "help":
+        this.showHelp(outputElement);
+        break;
+      case "about":
+        this.showAbout(outputElement);
+        break;
+      case "experience":
+        this.showExperience(outputElement);
+        break;
+      case "education":
+        this.showEducation(outputElement);
+        break;
+      case "skills":
+        this.showSkills(outputElement);
+        break;
+      case "contact":
+        this.showContact(outputElement);
+        break;
+      case "clear":
+        outputElement.innerHTML = "";
+        this.printWelcomeMessage(outputElement);
+        break;
+      case "projects":
+        this.showProjects();
+        break;
+      case "skills-visual":
+        this.showSkillsVisualization();
+        break;
+      case "game":
+        this.initGame();
+        break;
+      case "pdf":
+        this.generatePDF();
+        break;
+      case "linkedin-cover":
+        this.generateLinkedInCover(outputElement);
+        break;
+      case "exit-game":
+        this.endGame();
+        this.printToOutput(outputElement, "Game exited.", "info");
+        break;
+      case "matrix":
+        this.startMatrixEffect(outputElement);
+        break;
+      case "stop-matrix":
+        this.stopMatrixEffect();
+        this.printToOutput(outputElement, "Matrix effect stopped.", "info");
+        break;
+      case "weather":
+        this.showWeather(args.join(" "), outputElement);
+        break;
+      case "calc":
+      case "calculate":
+        this.calculate(args.join(" "), outputElement);
+        break;
+      case "":
+        break;
+      default:
+        this.printToOutput(
+          outputElement,
+          `Command not found: ${command}. Type 'help' for available commands.`,
+          "error"
+        );
+    }
+
+    this.scrollToBottom(outputElement.closest(".terminal-content"));
+  }
+
+  printWelcomeMessage(outputElement = this.output) {
+    const asciiArt = `███████╗ ██████╗ ██╗  ██╗ █████╗ ███╗   ███╗
+██╔════╝██╔═══██╗██║  ██║██╔══██╗████╗ ████║
+███████╗██║   ██║███████║███████║██╔████╔██║
+╚════██║██║   ██║██╔══██║██╔══██║██║╚██╔╝██║
+███████║╚██████╔╝██║  ██║██║  ██║██║ ╚═╝ ██║
+╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝`;
+
+    const divider = "─────────────────────────────────────────────────";
+
+    const welcome =
+      this.wrapWithColor(asciiArt + "\n", "#d4843e") +
+      this.wrapWithColor(divider + "\n", "#555555") +
+      this.wrapWithColor(
+        "              Interactive Terminal Resume\n",
+        "#888888"
+      ) +
+      this.wrapWithColor(
+        "       Computer Science Student • MERN Stack & AR Developer\n",
+        "#666666"
+      ) +
+      this.wrapWithColor(divider + "\n\n", "#555555") +
+      this.wrapWithColor("Type ", "#666666") +
+      this.wrapWithColor("'help'", "#87af87") +
+      this.wrapWithColor(" to see available commands\n", "#666666") +
+      this.wrapWithColor("Press ", "#666666") +
+      this.wrapWithColor("'tab'", "#87af87") +
+      this.wrapWithColor(" to auto-complete commands", "#666666");
+
+    const helpDiv = document.createElement("div");
+    helpDiv.innerHTML = welcome;
+    outputElement.appendChild(helpDiv);
+    this.scrollToBottom(outputElement.closest(".terminal-content"));
+  }
+
+  showHelp(outputElement = this.output) {
+    const title = this.wrapWithColor("🚀 Available Commands\n\n", "#ffff00");
+
+    const mainCommands =
+      this.wrapWithColor("Main Commands:\n", "#00ffff") +
+      this.wrapWithColor("• help", "#98fb98") +
+      "       " +
+      this.wrapWithColor("Show this help message\n", "#ffffff") +
+      this.wrapWithColor("• about", "#98fb98") +
+      "      " +
+      this.wrapWithColor("Display my professional summary\n", "#ffffff") +
+      this.wrapWithColor("• skills", "#98fb98") +
+      "     " +
+      this.wrapWithColor("View my technical expertise\n", "#ffffff") +
+      this.wrapWithColor("• experience", "#98fb98") +
+      " " +
+      this.wrapWithColor("Show my work history\n", "#ffffff") +
+      this.wrapWithColor("• education", "#98fb98") +
+      "  " +
+      this.wrapWithColor("View my educational background\n", "#ffffff") +
+      this.wrapWithColor("• contact", "#98fb98") +
+      "    " +
+      this.wrapWithColor("Get my contact information\n", "#ffffff") +
+      this.wrapWithColor("• clear", "#98fb98") +
+      "      " +
+      this.wrapWithColor("Clear the terminal screen\n", "#ffffff");
+
+    const utilityCommands =
+      "\n" +
+      this.wrapWithColor("Utility Commands:\n", "#00ffff") +
+      this.wrapWithColor("• projects", "#98fb98") +
+      "   " +
+      this.wrapWithColor("View my project showcase\n", "#ffffff") +
+      this.wrapWithColor("• skills-visual", "#98fb98") +
+      " " +
+      this.wrapWithColor("Show skills visualization\n", "#ffffff") +
+      this.wrapWithColor("• game", "#98fb98") +
+      "      " +
+      this.wrapWithColor("Play a mini-game\n", "#ffffff") +
+      this.wrapWithColor("• matrix", "#98fb98") +
+      "    " +
+      this.wrapWithColor("Start Matrix digital rain effect\n", "#ffffff") +
+      this.wrapWithColor("• weather", "#98fb98") +
+      "   " +
+      this.wrapWithColor("Check weather for a location\n", "#ffffff") +
+      this.wrapWithColor("• calc", "#98fb98") +
+      "      " +
+      this.wrapWithColor("Calculate mathematical expressions\n", "#ffffff") +
+      this.wrapWithColor("• pdf", "#98fb98") +
+      "       " +
+      this.wrapWithColor("Download resume as PDF\n", "#ffffff") +
+      this.wrapWithColor("• linkedin-cover", "#98fb98") +
+      " " +
+      this.wrapWithColor("Generate LinkedIn cover image\n", "#ffffff");
+
+    const shortcuts =
+      "\n" +
+      this.wrapWithColor("Shortcuts:\n", "#666666") +
+      this.wrapWithColor("• ", "#666666") +
+      this.wrapWithColor("↑/↓", "#666666") +
+      "         " +
+      this.wrapWithColor("Navigate command history\n", "#444444") +
+      this.wrapWithColor("• ", "#666666") +
+      this.wrapWithColor("Tab", "#666666") +
+      "         " +
+      this.wrapWithColor("Auto-complete commands\n", "#444444") +
+      this.wrapWithColor("• ", "#666666") +
+      this.wrapWithColor("Ctrl+L", "#666666") +
+      "      " +
+      this.wrapWithColor("Clear the screen\n", "#444444") +
+      this.wrapWithColor("• ", "#666666") +
+      this.wrapWithColor("Ctrl+Shift+H", "#666666") +
+      " " +
+      this.wrapWithColor("Split horizontally\n", "#444444") +
+      this.wrapWithColor("• ", "#666666") +
+      this.wrapWithColor("Ctrl+Shift+V", "#666666") +
+      " " +
+      this.wrapWithColor("Split vertically", "#444444");
+
+    const help = title + mainCommands + utilityCommands + shortcuts;
+
+    const helpDiv = document.createElement("div");
+    helpDiv.innerHTML = help;
+    outputElement.appendChild(helpDiv);
+    this.scrollToBottom(outputElement.closest(".terminal-content"));
+  }
+
+  showAbout(outputElement = this.output) {
+    const about = `<span style="color: #ff8c00; font-weight: bold;">✨ About Me</span>
+
+${this.wrapWithColor(
+  "┌─────────────────────────────────────────────────────────┐",
+  "#ff8c00"
+)}
+${this.wrapWithColor("│", "#ff8c00")} ${this.wrapWithColor(
+      "Computer Science Engineering student skilled in MERN    ",
+      "#ffffff"
+    )}
+${this.wrapWithColor("│", "#ff8c00")} ${this.wrapWithColor(
+      "stack development, REST APIs, and AR experiences.      ",
+      "#ffffff"
+    )}
+${this.wrapWithColor(
+  "└─────────────────────────────────────────────────────────┘",
+  "#ff8c00"
+)}
+
+${this.wrapWithColor("⚡ Skillset", "#ff8c00")}
+${this.wrapWithColor(
+  "   Building responsive and dynamic web applications using",
+  "#ffffff"
+)}
+${this.wrapWithColor("   React.js, Node.js, Express.js, MongoDB, Three.js & AR.js", "#ff8c00")}
+
+${this.wrapWithColor("⚡ Education", "#ff8c00")}
+${this.wrapWithColor(
+  "   B.Tech in Computer Science Engineering @ Parul University",
+  "#ffffff"
+)}
+${this.wrapWithColor(
+  "   HSC @ R.K. Talreja College • SSC @ St. Jude's High School",
+  "#ffffff"
+)}
+
+${this.wrapWithColor("⚡ Focus", "#ff8c00")}
+${this.wrapWithColor(
+  "   Leveraging modern web standards, API integrations, and",
+  "#ffffff"
+)}
+${this.wrapWithColor("   3D/AR capabilities to build immersive web solutions", "#ffffff")}
+
+${this.wrapWithColor(
+  "╭───────────────────────────────────────────────────────╮",
+  "#ff8c00"
+)}
+${this.wrapWithColor("│", "#ff8c00")} ${this.wrapWithColor(
+      "Seeking software development internship opportunities!",
+      "#ffffff"
+    )} ${this.wrapWithColor("│", "#ff8c00")}
+${this.wrapWithColor(
+  "╰───────────────────────────────────────────────────────╯",
+  "#ff8c00"
+)}`;
+
+    const aboutDiv = document.createElement("div");
+    aboutDiv.innerHTML = about;
+    outputElement.appendChild(aboutDiv);
+    this.scrollToBottom(outputElement.closest(".terminal-content"));
+  }
+
+  // Helper method to wrap text with color
+  wrapWithColor(text, color) {
+    return `<span style="color: ${color}">${text}</span>`;
+  }
+
+  // Typewriter effect for terminal outputs
+  typeText(element, text, speed = 30) {
+    if (!element || !text) return Promise.resolve();
+
+    return new Promise((resolve) => {
+      let index = 0;
+      element.textContent = "";
+      element.style.display = "inline-block";
+
+      const interval = setInterval(() => {
+        if (index < text.length) {
+          element.textContent += text.charAt(index);
+          index++;
         } else {
-            SystemLog("> WEB3FORMS: SIMULATED SEND (Access key missing)", "info");
+          clearInterval(interval);
+          resolve();
         }
+      }, speed);
+    });
+  }
+
+  // Apply typewriter effect to HTML content
+  async typeHTML(element, html, speed = 30) {
+    if (!element || !html) return Promise.resolve();
+
+    // Create a temporary div to hold the HTML
+    const temp = document.createElement("div");
+    temp.innerHTML = html;
+
+    // Get text nodes and elements in order
+    const walker = document.createTreeWalker(
+      temp,
+      NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
+      null,
+      false
+    );
+
+    const nodes = [];
+    let currentNode;
+    while ((currentNode = walker.nextNode())) {
+      nodes.push(currentNode);
+    }
+
+    // Clear the target element
+    element.innerHTML = "";
+
+    // Process each node
+    for (const node of nodes) {
+      if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+        const span = document.createElement("span");
+        element.appendChild(span);
+        await this.typeText(span, node.textContent, speed);
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        const clone = node.cloneNode(false);
+        element.appendChild(clone);
+
+        // If this is a style or has no children, just add it as is
+        if (node.tagName === "STYLE" || !node.hasChildNodes()) {
+          clone.innerHTML = node.innerHTML;
+        }
+      }
+    }
+
+    return Promise.resolve();
+  }
+
+  showExperience(outputElement = this.output) {
+    const experience = `<span style="color: #ffff00; font-weight: bold;">💼 Projects & Activities</span>
+
+<span style="color: #00ffff;">AR VIRTUAL TRIAL ROOM WEBSITE</span>
+• Built an AR-based virtual trial room application using React.js, Three.js, and AR.js.
+• Implemented real-time camera overlay and responsive user interface for virtual product try-on.
+• Developed backend APIs using Node.js, Express.js, and MongoDB.
+${this.wrapWithColor("GitHub:", "#00ffff")} ${this.wrapWithColor("github.com/SOHAM5128/ar-virtual-trial-room", "#87cefa")}
+
+<span style="color: #00ffff;">AI INTERVIEW PREPARATION SYSTEM</span>
+• Developed an AI-powered mock interview platform that simulates technical and behavioral interviews.
+• Implemented real-time AI feedback and performance analysis using OpenAI API and Web Speech API.
+• Built the frontend using React.js and backend with Node.js, Express.js, and MongoDB.
+${this.wrapWithColor("GitHub:", "#00ffff")} ${this.wrapWithColor("github.com/SOHAM5128/ai-interview-preparation", "#87cefa")}
+
+<span style="color: #00ffff;">PORTFOLIO WEBSITE</span>
+• Developed a responsive portfolio website to showcase projects, certifications, and technical skills.
+• Designed mobile-friendly UI with smooth navigation and optimized responsiveness.
+• Implemented modern frontend components using React.js and JavaScript.
+${this.wrapWithColor("GitHub:", "#00ffff")} ${this.wrapWithColor("github.com/SOHAM5128/portfolio-website", "#87cefa")}
+
+<span style="color: #00ffff;">ACTIVITIES & COORDINATION</span>
+• ${this.wrapWithColor("Hackathon 2025", "#ffa07a")} - Participated and developed an innovative tech solution under competitive conditions.
+• Event Coordinator for Dhoom at Parul University, demonstrating leadership and organizational skills.`;
+
+    const experienceDiv = document.createElement("div");
+    experienceDiv.innerHTML = experience;
+    outputElement.appendChild(experienceDiv);
+    this.scrollToBottom(outputElement.closest(".terminal-content"));
+  }
+
+  showEducation(outputElement = this.output) {
+    const education = `<span style="color: #ff8c00; font-weight: bold;">🎓 Education</span>
+
+• ${this.wrapWithColor("Bachelor of Engineering (B.Tech.)", "#ffffff")}
+  Computer Science Engineering | Parul University, Vadodara, India
+  Expected Graduation: 2027
+
+• ${this.wrapWithColor("Higher Secondary Certificate (HSC)", "#ffffff")}
+  R. K. Talreja College, Thane, Maharashtra | 2023
+
+• ${this.wrapWithColor("Secondary School Certificate (SSC)", "#ffffff")}
+  St. Jude's High School, Kalyan, Maharashtra | 2021`;
+
+    const educationDiv = document.createElement("div");
+    educationDiv.innerHTML = education;
+    outputElement.appendChild(educationDiv);
+    this.scrollToBottom(outputElement.closest(".terminal-content"));
+  }
+
+  showSkills(outputElement = this.output) {
+    const skills = `<span style="color: #ffff00; font-weight: bold;">🛠️ Technical Skills</span>
+
+• ${this.wrapWithColor("Languages:", "#00ffff")} Java, JavaScript, Python, C, C++
+• ${this.wrapWithColor("Frontend:", "#00ffff")} HTML5, CSS3, React.js, Responsive Design
+• ${this.wrapWithColor("Backend:", "#00ffff")} Node.js, Express.js, REST APIs
+• ${this.wrapWithColor("Database:", "#00ffff")} MongoDB
+• ${this.wrapWithColor("Tools:", "#00ffff")} Git, GitHub, Three.js, AR.js`;
+
+    const skillsDiv = document.createElement("div");
+    skillsDiv.innerHTML = skills;
+    outputElement.appendChild(skillsDiv);
+    this.scrollToBottom(outputElement.closest(".terminal-content"));
+  }
+
+  showContact(outputElement = this.output) {
+    const contact = `<span style="color: #ff8c00; font-weight: bold;">📫 Contact Information</span>
+
+${this.wrapWithColor("✉", "#ff8c00")}  ${this.wrapWithColor(
+      "Email:",
+      "#ff8c00"
+    )} ${this.wrapWithColor(
+      '<a href="mailto:sohamneswankar@gmail.com" style="color: #ffffff; text-decoration: none;">sohamneswankar@gmail.com</a>',
+      "#ffffff"
+    )}
+
+${this.wrapWithColor("🌐", "#ff8c00")}  ${this.wrapWithColor(
+      "GitHub:",
+      "#ff8c00"
+    )} ${this.wrapWithColor(
+      '<a href="https://github.com/SOHAM5128" target="_blank" style="color: #ffffff; text-decoration: none;">github.com/SOHAM5128</a>',
+      "#ffffff"
+    )}
+
+${this.wrapWithColor("⚡", "#ff8c00")}  ${this.wrapWithColor(
+      "LeetCode:",
+      "#ff8c00"
+    )} ${this.wrapWithColor(
+      '<a href="https://leetcode.com/u/SOHAM_3116" target="_blank" style="color: #ffffff; text-decoration: none;">leetcode.com/u/SOHAM_3116</a>',
+      "#ffffff"
+    )}
+
+${this.wrapWithColor("💼", "#ff8c00")}  ${this.wrapWithColor(
+      "LinkedIn:",
+      "#ff8c00"
+    )} ${this.wrapWithColor(
+      '<a href="https://linkedin.com/in/soham-neswankar" target="_blank" style="color: #ffffff; text-decoration: none;">linkedin.com/in/soham-neswankar</a>',
+      "#ffffff"
+    )}`;
+
+    const contactDiv = document.createElement("div");
+    contactDiv.innerHTML = contact;
+    outputElement.appendChild(contactDiv);
+    this.scrollToBottom(outputElement.closest(".terminal-content"));
+  }
+
+  closeSplit(terminalContent) {
+    const container = terminalContent.parentElement;
+    const input = terminalContent.querySelector("input");
+
+    // Remove from terminals array
+    const terminalIndex = this.terminals.findIndex((t) => t.input === input);
+    if (terminalIndex > -1) {
+      this.terminals.splice(terminalIndex, 1);
+    }
+
+    // Remove the terminal content
+    terminalContent.remove();
+
+    // If container is empty or has only one child, move remaining content up
+    if (
+      container.children.length <= 1 &&
+      container !== this.terminalContainer
+    ) {
+      if (container.children.length === 1) {
+        const remainingContent = container.firstElementChild;
+        container.parentElement.insertBefore(remainingContent, container);
+      }
+      container.remove();
+    }
+
+    // Focus the previous terminal
+    if (this.terminals.length > 0) {
+      const newActiveIndex = Math.min(terminalIndex, this.terminals.length - 1);
+      this.terminals[newActiveIndex].input.focus();
+      this.activeTerminal = newActiveIndex;
+    }
+  }
+
+  loadProjects() {
+    this.projects = [
+      {
+        title: "AR Virtual Trial Room Website",
+        description: "Built an AR-based virtual trial room application. Implemented real-time camera overlay and responsive user interface for virtual product try-on. Developed backend APIs.",
+        image: "image/social-cover.png",
+        technologies: ["React.js", "Three.js", "AR.js", "Node.js", "Express.js", "MongoDB"],
+        demo: "https://github.com/SOHAM5128/ar-virtual-trial-room",
+        repo: "https://github.com/SOHAM5128/ar-virtual-trial-room",
+      },
+      {
+        title: "AI Interview Preparation system",
+        description: "Developed an AI-powered mock interview platform that simulates technical and behavioral interviews, provides real-time AI feedback, and analyzes user performance.",
+        image: "image/social-cover.png",
+        technologies: ["React.js", "Node.js", "Express.js", "MongoDB", "OpenAI API", "Web Speech API"],
+        demo: "https://github.com/SOHAM5128/ai-interview-preparation",
+        repo: "https://github.com/SOHAM5128/ai-interview-preparation",
+      },
+      {
+        title: "Portfolio Website",
+        description: "Developed a responsive portfolio website to showcase projects, certifications, and technical skills. Designed mobile-friendly UI with smooth navigation.",
+        image: "image/social-cover.png",
+        technologies: ["HTML5", "CSS3", "JavaScript", "React.js", "GitHub"],
+        demo: "https://github.com/SOHAM5128/portfolio-website",
+        repo: "https://github.com/SOHAM5128/portfolio-website",
+      }
+    ];
+  }
+
+  loadSkills() {
+    this.skills = {
+      languages: {
+        JavaScript: 90,
+        Java: 85,
+        Python: 80,
+        C: 75,
+        "C++": 75
+      },
+      frontend: {
+        "React.js": 85,
+        HTML5: 90,
+        CSS3: 88,
+        "Responsive Web Design": 90
+      },
+      backend: {
+        "Node.js": 80,
+        "Express.js": 82,
+        "REST APIs": 85
+      },
+      databases: {
+        MongoDB: 85
+      },
+      tools_and_AR: {
+        Git: 88,
+        GitHub: 90,
+        "Three.js": 78,
+        "AR.js": 80
+      }
+    };
+  }
+
+  setupFileSystem() {
+    this.fileSystem = {
+      resume: {
+        type: "directory",
+        contents: {
+          "about.txt": { 
+            type: "file", 
+            content: "Soham Satyawan Neswankar - Computer Science Engineering Student.\nSkilled in MERN stack development, REST API integration, and responsive web applications. Experienced in building full-stack and AR-based projects using React.js, Node.js, MongoDB, and Three.js.\nSeeking software development internship opportunities." 
+          },
+          "skills.md": { 
+            type: "file", 
+            content: "# Skills\n- Languages: Java, JavaScript, Python, C, C++\n- Frontend: React.js, HTML5, CSS3, Responsive Design\n- Backend: Node.js, Express.js, REST APIs\n- Database: MongoDB\n- Tools: Git, GitHub, Three.js, AR.js" 
+          },
+          projects: {
+            type: "directory",
+            contents: {
+              "ar_trial_room.md": { 
+                type: "file", 
+                content: "# AR Virtual Trial Room Website\nTech Stack: React.js, Three.js, AR.js, Node.js, Express.js, MongoDB\n- Built an AR-based virtual trial room application.\n- Implemented real-time camera overlay for virtual product try-on.\n- Developed backend APIs using Node.js, Express.js, and MongoDB." 
+              },
+              "ai_interview_prep.md": { 
+                type: "file", 
+                content: "# AI Interview Preparation system\nTech Stack: React.js, Node.js, Express.js, MongoDB, OpenAI API, Web Speech API\n- Developed an AI-powered mock interview platform.\n- Implemented real-time AI feedback and performance analysis.\n- Integrated OpenAI API for dynamic questioning and Web Speech API for voice interactions." 
+              },
+              "portfolio.md": { 
+                type: "file", 
+                content: "# Portfolio Website\nTech Stack: HTML5, CSS3, JavaScript, React.js, GitHub\n- Developed a responsive portfolio website.\n- Designed mobile-friendly UI with smooth navigation.\n- Implemented modern frontend components using React.js." 
+              },
+            },
+          },
+        },
+      },
+    };
+  }
+
+  // Theme handling
+  handleThemeChange(theme) {
+    this.terminal.className = `terminal theme-${theme}`;
+    localStorage.setItem("theme", theme);
+    this.currentTheme = theme;
+    this.closeModal(this.themeModal);
+  }
+
+  // Modal handling
+  showModal(modal) {
+    modal.classList.add("active");
+  }
+
+  closeModal(modal) {
+    modal.classList.remove("active");
+  }
+
+  // Projects showcase
+  showProjects() {
+    const container = this.projectsModal.querySelector(".projects-container");
+    container.innerHTML = this.projects
+      .map(
+        (project) => `
+      <div class="project-card">
+        <img src="${project.image}" alt="${
+          project.title
+        }" class="project-image">
+        <div class="project-details">
+          <h3 class="project-title">${project.title}</h3>
+          <p class="project-description">${project.description}</p>
+          <div class="project-tech">
+            ${project.technologies
+              .map(
+                (tech) => `
+              <span class="tech-tag">${tech}</span>
+            `
+              )
+              .join("")}
+          </div>
+          <div class="project-links">
+            <a href="${project.demo}" class="project-link" target="_blank">
+              <i class="fas fa-external-link-alt"></i> Demo
+            </a>
+            <a href="${project.repo}" class="project-link" target="_blank">
+              <i class="fab fa-github"></i> Repository
+            </a>
+          </div>
+        </div>
+      </div>
+    `
+      )
+      .join("");
+    this.showModal(this.projectsModal);
+  }
+
+  // Skills visualization
+  showSkillsVisualization() {
+    const container = this.skillsModal.querySelector(".skills-container");
+    container.innerHTML = Object.entries(this.skills)
+      .map(
+        ([category, skills]) => `
+      <div class="skill-category">
+        <h3 class="skill-category-title">${category}</h3>
+        <div class="skill-bars">
+          ${Object.entries(skills)
+            .map(
+              ([skill, level]) => `
+            <div class="skill-item">
+              <div class="skill-info">
+                <span class="skill-name">${skill}</span>
+                <span class="skill-level">${level}%</span>
+              </div>
+              <div class="skill-progress">
+                <div class="skill-progress-bar" style="width: ${level}%"></div>
+              </div>
+            </div>
+          `
+            )
+            .join("")}
+        </div>
+      </div>
+    `
+      )
+      .join("");
+    this.showModal(this.skillsModal);
+  }
+
+  // File explorer
+  navigateFileSystem(path) {
+    const parts = path.split("/").filter(Boolean);
+    let current = this.fileSystem;
+    for (const part of parts) {
+      if (current.type !== "directory" || !current.contents[part]) {
+        return null;
+      }
+      current = current.contents[part];
+    }
+    return current;
+  }
+
+  // PDF Generation
+  async generatePDF() {
+    const outputElement = this.terminals[this.activeTerminal].input
+      .closest(".terminal-content")
+      .querySelector("[id^='output']");
+    this.printToOutput(outputElement, "Initiating PDF resume download...", "info");
+    
+    setTimeout(() => {
+      try {
+        const link = document.createElement("a");
+        link.href = "resume.pdf";
+        link.download = "Soham_Neswankar_Resume.pdf";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
         
-        button.classList.add('animation');
-        
-        const box = button.querySelector('.box');
-        const truck = button.querySelector('.truck');
-        
-        // Disable form inputs during transmission
-        const inputs = contactForm.querySelectorAll('.cyber-input');
-        inputs.forEach(input => input.disabled = true);
-        
-        // Play GSAP Animation Timeline
-        gsap.to(button, {
-            '--box-s': 1,
-            '--box-o': 1,
-            duration: 0.3,
-            delay: 0.5
-        });
-        
-        gsap.to(box, {
-            x: 0,
-            duration: 0.4,
-            delay: 0.7
-        });
-        
-        gsap.to(button, {
-            '--hx': -5,
-            '--bx': 50,
-            duration: 0.18,
-            delay: 0.92
-        });
-        
-        gsap.to(box, {
-            y: 0,
-            duration: 0.1,
-            delay: 1.15
-        });
-        
-        gsap.set(button, {
-            '--truck-y': 0,
-            '--truck-y-n': -26
-        });
-        
-        gsap.to(button, {
-            '--truck-y': 1,
-            '--truck-y-n': -25,
-            duration: 0.2,
-            delay: 1.25,
-            onComplete() {
-                gsap.timeline({
-                    onComplete() {
-                        button.classList.add('done');
-                        
-                        // Wait 3.5 seconds, then reset the button and form automatically
-                        setTimeout(() => {
-                            // Re-enable form inputs
-                            inputs.forEach(input => input.disabled = false);
-                            
-                            // Reset button to initial state
-                            button.classList.remove('animation', 'done');
-                            gsap.set(truck, { x: 4 });
-                            gsap.set(button, {
-                                '--progress': 0,
-                                '--hx': 0,
-                                '--bx': 0,
-                                '--box-s': 0.5,
-                                '--box-o': 0,
-                                '--truck-y': 0,
-                                '--truck-y-n': -26
-                            });
-                            gsap.set(box, { x: -24, y: -6 });
-                            
-                            // Reset form fields
-                            contactForm.reset();
-                        }, 3500);
-                    }
-                }).to(truck, {
-                    x: 0,
-                    duration: 0.4
-                }).to(truck, {
-                    x: 40,
-                    duration: 1
-                }).to(truck, {
-                    x: 20,
-                    duration: 0.6
-                }).to(truck, {
-                    x: 96,
-                    duration: 0.4
-                });
-                
-                gsap.to(button, {
-                    '--progress': 1,
-                    duration: 2.4,
-                    ease: "power2.in"
-                });
+        this.printToOutput(
+          outputElement,
+          "PDF resume downloaded successfully! Check your browser's downloads folder.",
+          "info"
+        );
+      } catch (e) {
+        this.printToOutput(
+          outputElement,
+          "Failed to trigger PDF download: " + e.message,
+          "error"
+        );
+      }
+    }, 1000);
+  }
+
+  // Mini-game - Snake game with p5.js
+  initGame() {
+    // Clean up any existing game
+    this.endGame();
+
+    // Start new game
+    this.gameActive = true;
+
+    const outputElement = this.terminals[this.activeTerminal].input
+      .closest(".terminal-content")
+      .querySelector("[id^='output']");
+
+    const gameContainer = document.createElement("div");
+    gameContainer.className = "game-container";
+    gameContainer.id = "snake-game-container";
+    gameContainer.innerHTML = `
+      <div class="game-instructions">
+        <p>Snake Game: Use arrow keys to move.</p>
+        <p>Press P to pause, SPACE to restart, ESC to exit.</p>
+      </div>
+      <div id="snake-game-score">Score: 0</div>
+      <div id="snake-game-canvas"></div>
+    `;
+
+    outputElement.appendChild(gameContainer);
+
+    // Initialize p5.js snake game
+    this.initSnakeGame();
+
+    // Scroll to make sure game is visible
+    this.scrollToBottom(outputElement.closest(".terminal-content"));
+  }
+
+  endGame() {
+    if (!this.gameActive) return;
+
+    this.gameActive = false;
+
+    // Remove event listener if it exists
+    if (this.gameHandler) {
+      document.removeEventListener("keydown", this.gameHandler);
+      this.gameHandler = null;
+    }
+
+    // Remove p5.js instance if it exists
+    if (this.p5Instance) {
+      this.p5Instance.remove();
+      this.p5Instance = null;
+    }
+
+    // Remove game container if it exists
+    const gameContainer = document.getElementById("snake-game-container");
+    if (gameContainer) {
+      gameContainer.remove();
+    }
+  }
+
+  initSnakeGame() {
+    const sketch = (p) => {
+      // Game variables
+      const gridSize = 20;
+      const canvasWidth = 400;
+      const canvasHeight = 300;
+      let snake = [];
+      let food;
+      let direction = { x: 1, y: 0 };
+      let nextDirection = { x: 1, y: 0 };
+      let score = 0;
+      let gameOver = false;
+      let frameRate = 10;
+      let isPaused = false;
+
+      p.setup = () => {
+        const canvas = p.createCanvas(canvasWidth, canvasHeight);
+        canvas.parent("snake-game-canvas");
+        p.frameRate(frameRate);
+        resetGame();
+      };
+
+      p.draw = () => {
+        p.background(0);
+
+        if (isPaused) {
+          drawGrid();
+          p.fill(255);
+          p.textSize(24);
+          p.textAlign(p.CENTER, p.CENTER);
+          p.text("PAUSED", canvasWidth / 2, canvasHeight / 2);
+          p.textSize(16);
+          p.text("Press P to resume", canvasWidth / 2, canvasHeight / 2 + 30);
+          return;
+        }
+
+        if (gameOver) {
+          drawGrid();
+          p.fill(255, 0, 0);
+          p.textSize(24);
+          p.textAlign(p.CENTER, p.CENTER);
+          p.text("Game Over!", canvasWidth / 2, canvasHeight / 2 - 20);
+          p.textSize(16);
+          p.text(`Score: ${score}`, canvasWidth / 2, canvasHeight / 2 + 20);
+          p.text(
+            "Press SPACE to restart",
+            canvasWidth / 2,
+            canvasHeight / 2 + 50
+          );
+          return;
+        }
+
+        // Update game state
+        direction = nextDirection;
+        moveSnake();
+        checkCollision();
+        checkFood();
+
+        // Draw game
+        drawGrid();
+        drawSnake();
+        drawFood();
+        updateScore();
+      };
+
+      p.keyPressed = () => {
+        if (p.keyCode === 80) {
+          // P key for pause
+          isPaused = !isPaused;
+          return false;
+        }
+
+        if (isPaused) return false;
+
+        if (p.keyCode === p.UP_ARROW && direction.y !== 1) {
+          nextDirection = { x: 0, y: -1 };
+        } else if (p.keyCode === p.DOWN_ARROW && direction.y !== -1) {
+          nextDirection = { x: 0, y: 1 };
+        } else if (p.keyCode === p.LEFT_ARROW && direction.x !== 1) {
+          nextDirection = { x: -1, y: 0 };
+        } else if (p.keyCode === p.RIGHT_ARROW && direction.x !== -1) {
+          nextDirection = { x: 1, y: 0 };
+        } else if (p.keyCode === 32 && gameOver) {
+          // SPACE to restart
+          resetGame();
+        } else if (p.keyCode === 27) {
+          // ESC to exit
+          this.endGame();
+        }
+
+        // Prevent default behavior for arrow keys
+        if (
+          [
+            p.UP_ARROW,
+            p.DOWN_ARROW,
+            p.LEFT_ARROW,
+            p.RIGHT_ARROW,
+            32,
+            27,
+            80,
+          ].includes(p.keyCode)
+        ) {
+          return false;
+        }
+      };
+
+      function resetGame() {
+        snake = [
+          { x: 5, y: 5 },
+          { x: 4, y: 5 },
+          { x: 3, y: 5 },
+        ];
+        direction = { x: 1, y: 0 };
+        nextDirection = { x: 1, y: 0 };
+        score = 0;
+        gameOver = false;
+        placeFood();
+        updateScore();
+      }
+
+      function moveSnake() {
+        // Create new head
+        const head = {
+          x: snake[0].x + direction.x,
+          y: snake[0].y + direction.y,
+        };
+
+        // Wrap around edges
+        if (head.x < 0) head.x = Math.floor(canvasWidth / gridSize) - 1;
+        if (head.x >= canvasWidth / gridSize) head.x = 0;
+        if (head.y < 0) head.y = Math.floor(canvasHeight / gridSize) - 1;
+        if (head.y >= canvasHeight / gridSize) head.y = 0;
+
+        // Add new head to beginning of snake
+        snake.unshift(head);
+
+        // Remove tail unless food was eaten
+        if (head.x !== food.x || head.y !== food.y) {
+          snake.pop();
+        } else {
+          placeFood();
+          score += 10;
+          // Increase speed slightly with each food
+          if (frameRate < 20) {
+            frameRate += 0.5;
+            p.frameRate(frameRate);
+          }
+        }
+      }
+
+      function checkCollision() {
+        // Check if snake collides with itself
+        const head = snake[0];
+        for (let i = 1; i < snake.length; i++) {
+          if (head.x === snake[i].x && head.y === snake[i].y) {
+            gameOver = true;
+            return;
+          }
+        }
+      }
+
+      function checkFood() {
+        const head = snake[0];
+        if (head.x === food.x && head.y === food.y) {
+          placeFood();
+          score += 10;
+        }
+      }
+
+      function placeFood() {
+        // Find a position for food that's not occupied by the snake
+        let validPosition = false;
+        while (!validPosition) {
+          food = {
+            x: Math.floor(p.random(canvasWidth / gridSize)),
+            y: Math.floor(p.random(canvasHeight / gridSize)),
+          };
+
+          validPosition = true;
+          // Check if food is on snake
+          for (const segment of snake) {
+            if (segment.x === food.x && segment.y === food.y) {
+              validPosition = false;
+              break;
             }
-        });
+          }
+        }
+      }
+
+      function drawSnake() {
+        p.noStroke();
+
+        // Draw snake body
+        for (let i = 1; i < snake.length; i++) {
+          p.fill(0, 255, 0); // Green body
+          p.rect(
+            snake[i].x * gridSize,
+            snake[i].y * gridSize,
+            gridSize - 2,
+            gridSize - 2,
+            4
+          );
+        }
+
+        // Draw snake head
+        p.fill(0, 200, 0); // Darker green head
+        p.rect(
+          snake[0].x * gridSize,
+          snake[0].y * gridSize,
+          gridSize - 2,
+          gridSize - 2,
+          6
+        );
+      }
+
+      function drawFood() {
+        p.fill(255, 0, 0); // Red food
+        p.ellipse(
+          food.x * gridSize + gridSize / 2,
+          food.y * gridSize + gridSize / 2,
+          gridSize * 0.8,
+          gridSize * 0.8
+        );
+      }
+
+      function drawGrid() {
+        p.stroke(30);
+        p.strokeWeight(0.5);
+
+        // Draw vertical lines
+        for (let x = 0; x <= canvasWidth; x += gridSize) {
+          p.line(x, 0, x, canvasHeight);
+        }
+
+        // Draw horizontal lines
+        for (let y = 0; y <= canvasHeight; y += gridSize) {
+          p.line(0, y, canvasWidth, y);
+        }
+      }
+
+      function updateScore() {
+        const scoreElement = document.getElementById("snake-game-score");
+        if (scoreElement) {
+          scoreElement.textContent = `Score: ${score}`;
+        }
+      }
+    };
+
+    // Create new p5 instance
+    this.p5Instance = new p5(sketch);
+  }
+
+  // Matrix rain effect
+  startMatrixEffect(outputElement) {
+    // Stop any existing matrix effect
+    this.stopMatrixEffect();
+
+    // Create canvas for matrix effect
+    const matrixContainer = document.createElement("div");
+    matrixContainer.className = "matrix-container";
+    matrixContainer.id = "matrix-container";
+
+    const canvas = document.createElement("canvas");
+    canvas.id = "matrix-canvas";
+    matrixContainer.appendChild(canvas);
+
+    const instructions = document.createElement("div");
+    instructions.className = "matrix-instructions";
+    instructions.textContent = "Type 'stop-matrix' to exit";
+    matrixContainer.appendChild(instructions);
+
+    outputElement.appendChild(matrixContainer);
+
+    // Set up canvas
+    const ctx = canvas.getContext("2d");
+    canvas.width = matrixContainer.offsetWidth;
+    canvas.height = 300;
+
+    // Matrix characters
+    const characters =
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$+-*/=%\"'#&_(),.;:?!\\|{}<>[]^~";
+    const columns = Math.floor(canvas.width / 20);
+    const drops = [];
+
+    // Initialize drops
+    for (let i = 0; i < columns; i++) {
+      drops[i] = Math.floor(Math.random() * -20);
+    }
+
+    // Matrix green color in current theme
+    const getMatrixColor = () => {
+      const themeColors = {
+        default: "#00ff00",
+        dracula: "#50fa7b",
+        solarized: "#859900",
+        nord: "#a3be8c",
+      };
+      return themeColors[this.currentTheme] || "#00ff00";
+    };
+
+    // Draw matrix effect
+    const drawMatrix = () => {
+      // Semi-transparent black to create fade effect
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = getMatrixColor();
+      ctx.font = "15px monospace";
+
+      for (let i = 0; i < drops.length; i++) {
+        // Random character
+        const char = characters[Math.floor(Math.random() * characters.length)];
+
+        // Draw character
+        ctx.fillText(char, i * 20, drops[i] * 20);
+
+        // Move drop down
+        if (drops[i] * 20 > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+
+        drops[i]++;
+      }
+    };
+
+    // Start animation
+    this.matrixInterval = setInterval(drawMatrix, 50);
+    this.scrollToBottom(outputElement.closest(".terminal-content"));
+  }
+
+  stopMatrixEffect() {
+    if (this.matrixInterval) {
+      clearInterval(this.matrixInterval);
+      this.matrixInterval = null;
+    }
+
+    const matrixContainer = document.getElementById("matrix-container");
+    if (matrixContainer) {
+      matrixContainer.remove();
+    }
+  }
+
+  // Weather command
+  async showWeather(location, outputElement) {
+    if (!location) {
+      this.printToOutput(
+        outputElement,
+        "Please specify a location. Usage: weather [city name]",
+        "error"
+      );
+      return;
+    }
+
+    this.printToOutput(
+      outputElement,
+      `Fetching weather for ${location}...`,
+      "info"
+    );
+
+    try {
+      // Using OpenWeatherMap API
+      const apiKey = "4331a27995f4c5b5e8d1eab1ed3d88b4"; // Free API key with limited usage
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
+        location
+      )}&appid=${apiKey}&units=metric`;
+
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} - ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      // Format weather data
+      const weatherHTML = `<div class="weather-container">
+        <div class="weather-header">
+          <span style="color: #ffff00; font-weight: bold;">🌤️ Weather for ${
+            data.name
+          }, ${data.sys.country}</span>
+        </div>
+        <div class="weather-body">
+          <div class="weather-main">
+            <span style="font-size: 2rem; color: #ffffff;">${Math.round(
+              data.main.temp
+            )}°C</span>
+            <span style="color: #cccccc;">${data.weather[0].main}</span>
+          </div>
+          <div class="weather-details">
+            <div><span style="color: #87cefa;">Feels like:</span> ${Math.round(
+              data.main.feels_like
+            )}°C</div>
+            <div><span style="color: #87cefa;">Humidity:</span> ${
+              data.main.humidity
+            }%</div>
+            <div><span style="color: #87cefa;">Wind:</span> ${Math.round(
+              data.wind.speed * 3.6
+            )} km/h</div>
+          </div>
+        </div>
+      </div>`;
+
+      this.printToOutput(outputElement, weatherHTML, "");
+    } catch (error) {
+      this.printToOutput(
+        outputElement,
+        `Failed to fetch weather data: ${error.message}`,
+        "error"
+      );
+    }
+  }
+
+  // Calculator command
+  calculate(expression, outputElement) {
+    if (!expression) {
+      this.printToOutput(
+        outputElement,
+        "Please enter a mathematical expression. Usage: calc [expression]",
+        "error"
+      );
+      return;
+    }
+
+    try {
+      // Sanitize the expression to prevent code injection
+      // Only allow numbers, basic operators, parentheses, and some math functions
+      const sanitizedExpression = expression.replace(/[^0-9+\-*/().%\s]/g, "");
+
+      // Evaluate the expression
+      const result = eval(sanitizedExpression);
+
+      if (isNaN(result) || !isFinite(result)) {
+        throw new Error("Invalid result");
+      }
+
+      // Format the result
+      const formattedResult =
+        typeof result === "number" && !Number.isInteger(result)
+          ? result.toFixed(4).replace(/\.?0+$/, "")
+          : result.toString();
+
+      const calculationHTML = `<div class="calculation">
+        <div class="calculation-expression">${this.wrapWithColor(
+          expression,
+          "#87cefa"
+        )}</div>
+        <div class="calculation-result">${this.wrapWithColor(
+          "= " + formattedResult,
+          "#98fb98"
+        )}</div>
+      </div>`;
+
+      this.printToOutput(outputElement, calculationHTML, "");
+    } catch (error) {
+      this.printToOutput(
+        outputElement,
+        `Error: Could not evaluate the expression. Make sure it's a valid mathematical expression.`,
+        "error"
+      );
+    }
+  }
+
+  // LinkedIn Cover Generator
+  generateLinkedInCover(outputElement) {
+    // Create container for the LinkedIn cover
+    const coverContainer = document.createElement("div");
+    coverContainer.className = "linkedin-cover-container";
+    coverContainer.style.width = "100%";
+    coverContainer.style.height = "300px";
+    coverContainer.style.position = "relative";
+    coverContainer.style.overflow = "hidden";
+    coverContainer.style.borderRadius = "8px";
+    coverContainer.style.marginTop = "10px";
+    coverContainer.style.marginBottom = "20px";
+    coverContainer.style.boxShadow = "0 10px 30px rgba(0,0,0,0.4)";
+    coverContainer.style.border = "1px solid rgba(255,255,255,0.1)";
+
+    // Create terminal-like background
+    const background = document.createElement("div");
+    background.style.position = "absolute";
+    background.style.top = "0";
+    background.style.left = "0";
+    background.style.width = "100%";
+    background.style.height = "100%";
+    background.style.backgroundColor = "#1e1e2e";
+    background.style.zIndex = "1";
+    coverContainer.appendChild(background);
+
+    // Add terminal header
+    const terminalHeader = document.createElement("div");
+    terminalHeader.style.position = "absolute";
+    terminalHeader.style.top = "0";
+    terminalHeader.style.left = "0";
+    terminalHeader.style.width = "100%";
+    terminalHeader.style.height = "30px";
+    terminalHeader.style.backgroundColor = "#282a36";
+    terminalHeader.style.borderBottom = "1px solid rgba(255,255,255,0.1)";
+    terminalHeader.style.display = "flex";
+    terminalHeader.style.alignItems = "center";
+    terminalHeader.style.padding = "0 10px";
+    terminalHeader.style.zIndex = "2";
+
+    // Add terminal buttons
+    const buttonsContainer = document.createElement("div");
+    buttonsContainer.style.display = "flex";
+    buttonsContainer.style.gap = "6px";
+
+    const colors = ["#ff5f56", "#ffbd2e", "#27c93f"];
+    colors.forEach((color) => {
+      const button = document.createElement("div");
+      button.style.width = "12px";
+      button.style.height = "12px";
+      button.style.borderRadius = "50%";
+      button.style.backgroundColor = color;
+      buttonsContainer.appendChild(button);
     });
 
-    // ==========================================================================
-    // 9. GITHUB SERVER API UPLINK
-    // ==========================================================================
-    async function fetchGithubStats() {
-        try {
-            console.log(">> [HTTP] Querying port 8080 API for GitHub stats...");
-            const response = await fetch('/api/github-stats');
-            if (response.ok) {
-                const data = await response.json();
-                console.log(">> [GITHUB API] Dynamic statistics synchronized successfully:", data);
-                
-                const reposEl = document.getElementById('github-repos');
-                const starsEl = document.getElementById('github-stars');
-                
-                if (reposEl && data.total_repos) reposEl.innerText = `${data.total_repos}`;
-                if (starsEl && data.stars) starsEl.innerText = `${data.stars}`;
-            }
-        } catch (err) {
-            console.log(">> [GITHUB API] Uplink offline. Fallback active-sim enabled.");
-        }
-    }
-    
-    fetchGithubStats();
+    terminalHeader.appendChild(buttonsContainer);
 
-    // ==========================================================================
-    // 10. CODEPEN DEPLOY ENGINE
-    // ==========================================================================
-    const codepenDeployBtn = document.getElementById('codepen-deploy');
-    if (codepenDeployBtn) {
-        codepenDeployBtn.addEventListener('click', deployToCodePen);
-    }
+    // Add terminal title
+    const terminalTitle = document.createElement("div");
+    terminalTitle.textContent = "soham@neswankar: ~/interactive-resume";
+    terminalTitle.style.color = "#f8f8f2";
+    terminalTitle.style.fontSize = "12px";
+    terminalTitle.style.fontFamily = "'Fira Code', monospace";
+    terminalTitle.style.margin = "0 auto";
+    terminalHeader.appendChild(terminalTitle);
 
-    async function deployToCodePen() {
-        try {
-            console.log(">> [CODEPEN] Bundling local source files for CodePen deployment...");
-            
-            // 1. Fetch source files from local Java server
-            const htmlRaw = await fetch('index.html').then(r => r.text());
-            const cssRaw = await fetch('style.css').then(r => r.text());
-            const avatarJs = await fetch('avatar-3d.js').then(r => r.text());
-            const scriptJs = await fetch('script.js').then(r => r.text());
-            
-            // 2. Parse HTML and strip script and link references
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(htmlRaw, 'text/html');
-            
-            // Remove style.css link
-            const styleLink = doc.querySelector('link[href="style.css"]');
-            if (styleLink) styleLink.remove();
-            
-            // Remove all local and script CDN scripts
-            const scripts = doc.querySelectorAll('script');
-            scripts.forEach(s => {
-                const src = s.getAttribute('src') || '';
-                if (src.includes('three.js') || 
-                    src.includes('GLTFLoader.js') || 
-                    src.includes('MeshLine.js') || 
-                    src.includes('gsap.min.js') || 
-                    src.includes('ScrollTrigger.min.js') || 
-                    src.includes('vanilla-tilt.min.js') || 
-                    src.includes('avatar-3d.js') || 
-                    src.includes('script.js')) {
-                    s.remove();
-                }
-            });
-            
-            const cleanBody = doc.body.innerHTML;
-            
-            // 3. Setup external resources
-            const externalJS = [
-                "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js",
-                "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js",
-                "https://unpkg.com/three.meshline@1.4.0/src/THREE.MeshLine.js",
-                "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js",
-                "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js",
-                "https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"
-            ].join(";");
-            
-            const headHTML = `
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-            `.trim();
-            
-            // 4. Combine JS and inject comments on asset hosting
-            const combinedJS = `
-/* ==========================================================================
-   CODEPEN UPLINK AUTOMATION // SOHAM NESWANKAR PORTFOLIO
-   ========================================================================== */
+    coverContainer.appendChild(terminalHeader);
 
-/* 
- * NOTE: CodePen does not host binary assets (images or 3D models) on the free tier.
- * To enable custom photos and 3D lanyard models:
- * 1. Push your project to GitHub (github.com/SOHAM5128/portfolio).
- * 2. Enable GitHub Pages to host your files.
- * 3. Update the URLs in this JS tab pointing 'assets/kartu.glb' and 
- *    'assets/soham_avatar.png' to your raw github.io URLs!
- * 
- * If URLs are not updated, the 3D card fallback mesh and silhouette is enabled.
- */
+    // Add terminal content
+    const terminalContent = document.createElement("div");
+    terminalContent.style.position = "absolute";
+    terminalContent.style.top = "30px";
+    terminalContent.style.left = "0";
+    terminalContent.style.width = "100%";
+    terminalContent.style.height = "calc(100% - 30px)";
+    terminalContent.style.padding = "15px";
+    terminalContent.style.boxSizing = "border-box";
+    terminalContent.style.zIndex = "2";
+    terminalContent.style.overflow = "hidden";
+    coverContainer.appendChild(terminalContent);
 
-${avatarJs}
+    // Add ASCII art
+    const asciiArt = document.createElement("pre");
+    asciiArt.style.color = "#d4843e";
+    asciiArt.style.margin = "0";
+    asciiArt.style.fontSize = "10px";
+    asciiArt.style.fontFamily = "'Fira Code', monospace";
+    asciiArt.style.lineHeight = "1";
+    asciiArt.innerHTML = `███████╗ ██████╗ ██╗  ██╗ █████╗ ███╗   ███╗
+██╔════╝██╔═══██╗██║  ██║██╔══██╗████╗ ████║
+███████╗██║   ██║███████║███████║██╔████╔██║
+╚════██║██║   ██║██╔══██║██╔══██║██║╚██╔╝██║
+███████║╚██████╔╝██║  ██║██║  ██║██║ ╚═╝ ██║
+╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝`;
+    terminalContent.appendChild(asciiArt);
 
-${scriptJs}
-            `;
-            
-            // 5. Build Pen config JSON
-            const penConfig = {
-                title: "Soham Neswankar - Futuristic 3D Portfolio",
-                description: "Futuristic 3D Developer Portfolio featuring glassmorphic HUD design and physics-simulated swinging lanyard.",
-                html: cleanBody,
-                css: cssRaw,
-                js: combinedJS,
-                js_external: externalJS,
-                head: headHTML
-            };
-            
-            // 6. Generate and submit dynamic form
-            const form = document.createElement('form');
-            form.action = 'https://codepen.io/pen/define';
-            form.method = 'POST';
-            form.target = '_blank';
-            
-            const dataInput = document.createElement('input');
-            dataInput.type = 'hidden';
-            dataInput.name = 'data';
-            dataInput.value = JSON.stringify(penConfig);
-            
-            form.appendChild(dataInput);
-            document.body.appendChild(form);
-            form.submit();
-            
-            console.log(">> [CODEPEN] Project compiled and transmitted to CodePen prefill gateway.");
-            setTimeout(() => form.remove(), 1000);
-            
-        } catch (e) {
-            console.error("CodePen Deploy Fail:", e);
-            alert("UPLINK FAILED: Could not compile files for CodePen. " + e.message);
-        }
-    }
+    // Add divider
+    const divider = document.createElement("div");
+    divider.style.width = "100%";
+    divider.style.height = "1px";
+    divider.style.backgroundColor = "#555555";
+    divider.style.margin = "8px 0";
+    terminalContent.appendChild(divider);
 
-});
+    // Add subtitle
+    const subtitle = document.createElement("div");
+    subtitle.textContent = "Interactive Terminal Resume";
+    subtitle.style.color = "#888888";
+    subtitle.style.fontSize = "12px";
+    subtitle.style.fontFamily = "'Fira Code', monospace";
+    subtitle.style.textAlign = "center";
+    subtitle.style.marginBottom = "5px";
+    terminalContent.appendChild(subtitle);
+
+    // Add role
+    const role = document.createElement("div");
+    role.textContent = "Computer Science Student • MERN Stack & AR Developer";
+    role.style.color = "#666666";
+    role.style.fontSize = "10px";
+    role.style.fontFamily = "'Fira Code', monospace";
+    role.style.textAlign = "center";
+    role.style.marginBottom = "10px";
+    terminalContent.appendChild(role);
+
+    // Add another divider
+    const divider2 = document.createElement("div");
+    divider2.style.width = "100%";
+    divider2.style.height = "1px";
+    divider2.style.backgroundColor = "#555555";
+    divider2.style.margin = "8px 0";
+    terminalContent.appendChild(divider2);
+
+    // Add command prompt
+    const promptContainer = document.createElement("div");
+    promptContainer.style.display = "flex";
+    promptContainer.style.alignItems = "center";
+    promptContainer.style.marginTop = "10px";
+
+    const prompt = document.createElement("span");
+    prompt.textContent = "➜";
+    prompt.style.color = "#87af87";
+    prompt.style.marginRight = "8px";
+    prompt.style.fontSize = "14px";
+    promptContainer.appendChild(prompt);
+
+    const command = document.createElement("span");
+    command.textContent = "help";
+    command.style.color = "#f8f8f2";
+    command.style.fontFamily = "'Fira Code', monospace";
+    command.style.fontSize = "14px";
+    promptContainer.appendChild(command);
+
+    terminalContent.appendChild(promptContainer);
+
+    // Add command output preview
+    const commandOutput = document.createElement("div");
+    commandOutput.style.marginTop = "10px";
+
+    // Create a mini help menu
+    const helpTitle = document.createElement("div");
+    helpTitle.textContent = "🚀 Available Commands";
+    helpTitle.style.color = "#ffff00";
+    helpTitle.style.fontSize = "12px";
+    helpTitle.style.fontWeight = "bold";
+    helpTitle.style.marginBottom = "8px";
+    commandOutput.appendChild(helpTitle);
+
+    // Add main commands category
+    const mainCmdTitle = document.createElement("div");
+    mainCmdTitle.textContent = "Main Commands:";
+    mainCmdTitle.style.color = "#00ffff";
+    mainCmdTitle.style.fontSize = "10px";
+    mainCmdTitle.style.marginBottom = "4px";
+    commandOutput.appendChild(mainCmdTitle);
+
+    // Add some sample main commands
+    const mainCommands = [
+      { cmd: "about", desc: "Display professional summary" },
+      { cmd: "skills", desc: "View technical expertise" },
+      { cmd: "experience", desc: "Show work history" },
+    ];
+
+    mainCommands.forEach((item) => {
+      const cmdLine = document.createElement("div");
+      cmdLine.style.display = "flex";
+      cmdLine.style.fontSize = "10px";
+      cmdLine.style.marginBottom = "4px";
+
+      const cmdName = document.createElement("span");
+      cmdName.textContent = "• " + item.cmd;
+      cmdName.style.color = "#98fb98";
+      cmdName.style.width = "80px";
+      cmdLine.appendChild(cmdName);
+
+      const cmdDesc = document.createElement("span");
+      cmdDesc.textContent = item.desc;
+      cmdDesc.style.color = "#ffffff";
+      cmdLine.appendChild(cmdDesc);
+
+      commandOutput.appendChild(cmdLine);
+    });
+
+    // Add utility commands category
+    const utilityCmdTitle = document.createElement("div");
+    utilityCmdTitle.textContent = "Utility Commands:";
+    utilityCmdTitle.style.color = "#00ffff";
+    utilityCmdTitle.style.fontSize = "10px";
+    utilityCmdTitle.style.marginTop = "8px";
+    utilityCmdTitle.style.marginBottom = "4px";
+    commandOutput.appendChild(utilityCmdTitle);
+
+    // Add some sample utility commands
+    const utilityCommands = [
+      { cmd: "game", desc: "Play a mini-game" },
+      { cmd: "matrix", desc: "Start Matrix effect" },
+    ];
+
+    utilityCommands.forEach((item) => {
+      const cmdLine = document.createElement("div");
+      cmdLine.style.display = "flex";
+      cmdLine.style.fontSize = "10px";
+      cmdLine.style.marginBottom = "4px";
+
+      const cmdName = document.createElement("span");
+      cmdName.textContent = "• " + item.cmd;
+      cmdName.style.color = "#98fb98";
+      cmdName.style.width = "80px";
+      cmdLine.appendChild(cmdName);
+
+      const cmdDesc = document.createElement("span");
+      cmdDesc.textContent = item.desc;
+      cmdDesc.style.color = "#ffffff";
+      cmdLine.appendChild(cmdDesc);
+
+      commandOutput.appendChild(cmdLine);
+    });
+
+    terminalContent.appendChild(commandOutput);
+
+    // Add URL at the bottom
+    const urlContainer = document.createElement("div");
+    urlContainer.style.position = "absolute";
+    urlContainer.style.bottom = "10px";
+    urlContainer.style.left = "0";
+    urlContainer.style.width = "100%";
+    urlContainer.style.textAlign = "center";
+
+    const url = document.createElement("div");
+    url.textContent = "soham5128.github.io";
+    url.style.color = "#87cefa";
+    url.style.fontSize = "12px";
+    url.style.fontFamily = "'Fira Code', monospace";
+    urlContainer.appendChild(url);
+
+    terminalContent.appendChild(urlContainer);
+
+    // Add screenshot instructions
+    const instructions = document.createElement("div");
+    instructions.innerHTML = "";
+    instructions.style.position = "absolute";
+    instructions.style.bottom = "10px";
+    instructions.style.right = "10px";
+    instructions.style.color = "#ffffff";
+    instructions.style.opacity = "0.7";
+    instructions.style.fontSize = "10px";
+    instructions.style.zIndex = "3";
+    coverContainer.appendChild(instructions);
+
+    // Append the cover to the output
+    outputElement.appendChild(coverContainer);
+
+    // Scroll to make sure the cover is visible
+    this.scrollToBottom(outputElement.closest(".terminal-content"));
+  }
+}
+
+// Initialize the terminal
+new TerminalResume();
