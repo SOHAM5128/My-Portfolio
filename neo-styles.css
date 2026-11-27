@@ -3566,8 +3566,52 @@ body[data-theme="dark"] .nav-lazyfire {
     box-shadow: 3px 3px 0 var(--border);
   }
 
+
   .section-compact {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
   }
 }
+
+/* ── Certification Cards ───────────────────────────────────────── */
+a.cert-card {
+  text-decoration: none;
+  color: var(--text);
+  cursor: pointer;
+  display: block;
+}
+
+a.cert-card:hover {
+  text-decoration: none;
+  color: var(--text);
+}
+
+.cert-view-hint {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+  padding: 0.6rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: 'Space Mono', monospace;
+  background: var(--yellow);
+  border: 3px solid var(--border);
+  box-shadow: 3px 3px 0 var(--border);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: all 0.25s ease;
+  width: fit-content;
+}
+
+a.cert-card:hover .cert-view-hint {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+a.cert-card:nth-child(1) .cert-view-hint { background: var(--cyan); }
+a.cert-card:nth-child(2) .cert-view-hint { background: var(--yellow); }
+a.cert-card:nth-child(3) .cert-view-hint { background: var(--pink); }
+a.cert-card:nth-child(4) .cert-view-hint { background: var(--accent); }
+a.cert-card:nth-child(5) .cert-view-hint { background: var(--cyan); }
+

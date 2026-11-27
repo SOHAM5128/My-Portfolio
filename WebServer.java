@@ -45,6 +45,8 @@ public class WebServer {
             else if (path.endsWith(".png")) contentType = "image/png";
             else if (path.endsWith(".gif")) contentType = "image/gif";
             else if (path.endsWith(".ico")) contentType = "image/x-icon";
+            else if (path.endsWith(".pdf")) contentType = "application/pdf";
+            else if (path.endsWith(".jpg") || path.endsWith(".jpeg")) contentType = "image/jpeg";
 
             t.getResponseHeaders().set("Content-Type", contentType);
             t.sendResponseHeaders(200, file.length());
